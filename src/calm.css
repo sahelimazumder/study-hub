@@ -31,7 +31,8 @@
 .teach-back .session-feedback li{margin-bottom:.65rem}
 .teach-back>details{margin-top:1.5rem}
 
-.chart-step-help{margin-top:1.25rem;border-radius:12px;padding:1.25rem;border:1px solid var(--line)}
+.chart-step-help{display:block;margin-top:1.25rem;border-radius:12px;padding:1.25rem;border:1px solid var(--border);background:var(--paper);color:var(--text)}
+.chart-step-help.is-error{border-left:4px solid #b16e46}
 .chart-step-help h3{font-size:1.1rem;margin:0 0 .8rem}
 .chart-step-help p{margin:.65rem 0;line-height:1.65}
 .chart-step-help button{margin:.5rem 0}
