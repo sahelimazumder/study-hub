@@ -1,0 +1,432 @@
+[
+  {
+    "id": "NEW26-01",
+    "version": 1,
+    "module": "sql",
+    "scope": "Database & business practice",
+    "topic": "SQL joins and aggregates",
+    "type": "mcq",
+    "difficulty": "medium",
+    "max_marks": 4,
+    "stem": "A clinic has Patients(pid) rows 1, 2 and 3. Visits(pid,fee) contains (1,100), (1,200), (2,NULL). With no filters, an analyst LEFT JOINs Patients to Visits on pid. What are COUNT(*), COUNT(Visits.fee) and SUM(Visits.fee) over the joined rows?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "3, 3, 300"
+      },
+      {
+        "id": "B",
+        "text": "4, 2, 300"
+      },
+      {
+        "id": "C",
+        "text": "4, 4, 300"
+      },
+      {
+        "id": "D",
+        "text": "3, 2, 150"
+      }
+    ],
+    "answer": {
+      "choice_ids": [
+        "B"
+      ]
+    },
+    "solution": "Patient 1 produces two joined rows, patient 2 one, and unmatched patient 3 one. COUNT(*) is 4. Two fee values are observed, and their sum is 300. NULL is not a measured zero.",
+    "option_explanations": {
+      "A": "The repeated patient 1 produces an extra row; COUNT(fee) excludes NULL.",
+      "B": "Correct: 4 joined rows, 2 observed fees, sum 300.",
+      "C": "COUNT(fee) counts only non-NULL fee values.",
+      "D": "The query is a sum, not an average, and the join returns 4 rows."
+    },
+    "source_references": [
+      {
+        "source_id": "S10",
+        "locator": "Independently authored scenario; concept support only"
+      }
+    ],
+    "misconceptions": [
+      "null_vs_rows"
+    ],
+    "learning_objective": "Trace a LEFT JOIN and distinguish row count from non-NULL count",
+    "cognitive_task": "trace_and_interpret",
+    "difficulty_rationale": "Combine the stated assumptions with the business interpretation.",
+    "status": "validated",
+    "provenance_category": "authored_aligned_practice",
+    "validation": {
+      "schema_valid": true,
+      "deterministically_checked": true,
+      "editorially_reviewed": true,
+      "human_reviewed": false
+    },
+    "validation_calculation": {
+      "joined_rows": 4,
+      "observed_fees": 2,
+      "total_fee": 300
+    },
+    "review_history": [
+      {
+        "method": "Authoring review of key, alternatives and assumptions",
+        "at": "2026-10-22"
+      }
+    ]
+  },
+  {
+    "id": "NEW26-02",
+    "version": 1,
+    "module": "sql",
+    "scope": "Database & business practice",
+    "topic": "Composite key and INSERT trace",
+    "type": "msq",
+    "difficulty": "medium",
+    "max_marks": 4,
+    "stem": "A booking table has room_id INT, day DATE, optional note TEXT, and PRIMARY KEY(room_id,day). It has no other constraints and contains (7,'2026-10-22'). Each following INSERT runs independently under autocommit. Which statements are correct? Select ALL.",
+    "choices": [
+      {
+        "id": "A",
+        "text": "(7,'2026-10-23') is allowed with note omitted."
+      },
+      {
+        "id": "B",
+        "text": "(8,'2026-10-22') is allowed with note omitted."
+      },
+      {
+        "id": "C",
+        "text": "Another (7,'2026-10-22') is allowed if its note differs."
+      },
+      {
+        "id": "D",
+        "text": "(NULL,'2026-10-24') is allowed if its note is supplied."
+      }
+    ],
+    "answer": {
+      "choice_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "solution": "The full pair must be unique, and both key components must be non-NULL. Neither component alone must be unique. The optional note does not change the key.",
+    "option_explanations": {
+      "A": "Correct: a new day creates a new pair; optional note may be NULL.",
+      "B": "Correct: a different room creates a new pair.",
+      "C": "The key pair repeats, regardless of note.",
+      "D": "A primary-key component cannot be NULL."
+    },
+    "source_references": [
+      {
+        "source_id": "S10",
+        "locator": "Independently authored scenario; concept support only"
+      }
+    ],
+    "misconceptions": [
+      "composite_vs_individual_unique"
+    ],
+    "learning_objective": "Judge each composite-key insertion independently",
+    "cognitive_task": "trace_and_interpret",
+    "difficulty_rationale": "Combine the stated assumptions with the business interpretation.",
+    "status": "validated",
+    "provenance_category": "authored_aligned_practice",
+    "validation": {
+      "schema_valid": true,
+      "deterministically_checked": true,
+      "editorially_reviewed": true,
+      "human_reviewed": false
+    },
+    "validation_calculation": {
+      "allowed": [
+        "A",
+        "B"
+      ]
+    },
+    "review_history": [
+      {
+        "method": "Authoring review of key, alternatives and assumptions",
+        "at": "2026-10-22"
+      }
+    ]
+  },
+  {
+    "id": "NEW26-03",
+    "version": 1,
+    "module": "inference",
+    "scope": "Statistics practice",
+    "topic": "Paired inference and business meaning",
+    "type": "mcq",
+    "difficulty": "medium",
+    "max_marks": 4,
+    "stem": "A subscription team measures monthly support minutes for the same 30 customers before and after a redesigned help page. A suitable paired test gives a mean reduction of 4 minutes and a 95% interval from 1 to 7 minutes. Customers were not randomly assigned to a control group. Which recommendation is most defensible?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Roll out immediately: the interval proves every customer saves time."
+      },
+      {
+        "id": "B",
+        "text": "Use an independent-samples test because there are two measurements."
+      },
+      {
+        "id": "C",
+        "text": "Treat the reduction as evidence worth investigating, check cost and seasonality, and use a controlled pilot before a causal claim."
+      },
+      {
+        "id": "D",
+        "text": "Conclude there is no effect because some other explanations remain."
+      }
+    ],
+    "answer": {
+      "choice_ids": [
+        "C"
+      ]
+    },
+    "solution": "The paired observations support a mean-change analysis. The interval excludes zero under its assumptions, but it is not an interval for every customer and does not remove time-related confounding.",
+    "option_explanations": {
+      "A": "The interval estimates mean change, not each customer’s change.",
+      "B": "The same customers are measured twice, so the observations are paired.",
+      "C": "Correct: distinguish statistical evidence, causality and business benefit.",
+      "D": "Possible confounding does not erase the observed mean-change evidence."
+    },
+    "source_references": [
+      {
+        "source_id": "S09",
+        "locator": "Independently authored scenario; concept support only"
+      }
+    ],
+    "misconceptions": [
+      "significance_vs_causality"
+    ],
+    "learning_objective": "Separate paired statistical evidence from a causal rollout decision",
+    "cognitive_task": "interpret_business_evidence",
+    "difficulty_rationale": "Combine the stated assumptions with the business interpretation.",
+    "status": "validated",
+    "provenance_category": "authored_aligned_practice",
+    "validation": {
+      "schema_valid": true,
+      "deterministically_checked": false,
+      "editorially_reviewed": true,
+      "human_reviewed": false
+    },
+    "validation_calculation": null,
+    "review_history": [
+      {
+        "method": "Authoring review of key, alternatives and assumptions",
+        "at": "2026-10-22"
+      }
+    ]
+  },
+  {
+    "id": "NEW26-04",
+    "version": 1,
+    "module": "regression",
+    "scope": "Statistics practice",
+    "topic": "Conditional interaction slope",
+    "type": "msq",
+    "difficulty": "medium",
+    "max_marks": 4,
+    "stem": "An illustrative monthly sales model is Y = 10 + 2A + 3H + A×H, in ₹ lakh. A is advertising spend in ₹ lakh and H=1 for a city store, 0 for a town store. Treat the equation as a prediction model, not a causal estimate. Which statements are correct? Select ALL.",
+    "choices": [
+      {
+        "id": "A",
+        "text": "The advertising slope is 2 for town stores and 3 for city stores."
+      },
+      {
+        "id": "B",
+        "text": "At A=4, the predicted city-town sales gap is 7 lakh."
+      },
+      {
+        "id": "C",
+        "text": "The city-town gap is always 3 lakh, regardless of advertising."
+      },
+      {
+        "id": "D",
+        "text": "The coefficient 2 proves a causal return of two rupees for every advertising rupee."
+      }
+    ],
+    "answer": {
+      "choice_ids": [
+        "A",
+        "B"
+      ]
+    },
+    "solution": "Town sales are 10+2A; city sales are 13+3A. Their gap is 3+A, hence 7 at A=4. The equation alone does not identify a causal effect.",
+    "option_explanations": {
+      "A": "Correct: the interaction adds 1 to the slope when H=1.",
+      "B": "Correct: 3+4=7 lakh.",
+      "C": "The interaction makes the gap depend on A.",
+      "D": "A fitted conditional association is not automatically causal."
+    },
+    "source_references": [
+      {
+        "source_id": "S09",
+        "locator": "Independently authored scenario; concept support only"
+      }
+    ],
+    "misconceptions": [
+      "interaction_gap"
+    ],
+    "learning_objective": "Compute group-specific slopes and a conditional format difference",
+    "cognitive_task": "interpret_business_evidence",
+    "difficulty_rationale": "Combine the stated assumptions with the business interpretation.",
+    "status": "validated",
+    "provenance_category": "authored_aligned_practice",
+    "validation": {
+      "schema_valid": true,
+      "deterministically_checked": true,
+      "editorially_reviewed": true,
+      "human_reviewed": false
+    },
+    "validation_calculation": {
+      "town_at_4": 18,
+      "city_at_4": 25,
+      "gap": 7
+    },
+    "review_history": [
+      {
+        "method": "Authoring review of key, alternatives and assumptions",
+        "at": "2026-10-22"
+      }
+    ]
+  },
+  {
+    "id": "NEW26-05",
+    "version": 1,
+    "module": "business",
+    "scope": "Database & business practice",
+    "topic": "Business problem and metric tradeoff",
+    "type": "mcq",
+    "difficulty": "medium",
+    "max_marks": 4,
+    "stem": "A meal-delivery app reduces cancellations from 12% to 8% after offering a ₹40 voucher on every completed order. The finance team finds contribution per eligible visitor fell. Management asks whether the voucher should become permanent. What is the best next analysis?",
+    "choices": [
+      {
+        "id": "A",
+        "text": "Compare incremental contribution per eligible visitor in a controlled pilot, including voucher cost and retention."
+      },
+      {
+        "id": "B",
+        "text": "Keep the voucher because cancellation is the only relevant metric."
+      },
+      {
+        "id": "C",
+        "text": "Stop all analysis because a lower cancellation rate proves the voucher failed."
+      },
+      {
+        "id": "D",
+        "text": "Compare only revenue among customers who completed an order."
+      }
+    ],
+    "answer": {
+      "choice_ids": [
+        "A"
+      ]
+    },
+    "solution": "The decision concerns net business value, not one favourable rate. A comparable controlled pilot with voucher costs and retention can estimate incremental contribution and expose tradeoffs.",
+    "option_explanations": {
+      "A": "Correct: it addresses the decision and includes the cost of the intervention.",
+      "B": "A single operational metric does not settle profitability.",
+      "C": "A lower cancellation rate may be useful even if the current subsidy is too costly.",
+      "D": "Conditioning only on completed orders ignores changes in conversion and cost."
+    },
+    "source_references": [
+      {
+        "source_id": "S01",
+        "locator": "Independently authored scenario; concept support only"
+      }
+    ],
+    "misconceptions": [
+      "revenue_vs_contribution"
+    ],
+    "learning_objective": "Select a decision-relevant evaluation metric with guardrails",
+    "cognitive_task": "interpret_business_evidence",
+    "difficulty_rationale": "Combine the stated assumptions with the business interpretation.",
+    "status": "validated",
+    "provenance_category": "authored_aligned_practice",
+    "validation": {
+      "schema_valid": true,
+      "deterministically_checked": false,
+      "editorially_reviewed": true,
+      "human_reviewed": false
+    },
+    "validation_calculation": null,
+    "review_history": [
+      {
+        "method": "Authoring review of key, alternatives and assumptions",
+        "at": "2026-10-22"
+      }
+    ]
+  },
+  {
+    "id": "NEW26-06",
+    "version": 1,
+    "module": "descriptive",
+    "scope": "Statistics practice",
+    "topic": "Aggregate margin and weighting",
+    "type": "msq",
+    "difficulty": "medium",
+    "max_marks": 4,
+    "stem": "A distributor has two product groups. Group A records revenue ₹80,000 and profit ₹8,000. Group B records revenue ₹20,000 and profit ₹6,000. Management wants the overall profit margin. Which statements are correct? Select ALL.",
+    "choices": [
+      {
+        "id": "A",
+        "text": "The overall margin is 14%, using total profit divided by total revenue."
+      },
+      {
+        "id": "B",
+        "text": "The unweighted mean of group margins is 20% and equals the overall margin."
+      },
+      {
+        "id": "C",
+        "text": "Group B has the higher margin but the lower absolute profit."
+      },
+      {
+        "id": "D",
+        "text": "A chart of sales alone establishes that Group A is more profitable in percentage terms."
+      }
+    ],
+    "answer": {
+      "choice_ids": [
+        "A",
+        "C"
+      ]
+    },
+    "solution": "Total profit is 14,000 and total revenue 100,000, giving 14%. Group margins are 10% and 30%; their unweighted mean of 20% answers a different question.",
+    "option_explanations": {
+      "A": "Correct: 14,000/100,000=14%.",
+      "B": "The group revenue weights differ, so 20% is not the overall margin.",
+      "C": "Correct: 30% exceeds 10%, while 6,000 is below 8,000.",
+      "D": "Sales without profit cannot establish percentage profitability."
+    },
+    "source_references": [
+      {
+        "source_id": "S01",
+        "locator": "Independently authored scenario; concept support only"
+      }
+    ],
+    "misconceptions": [
+      "average_of_ratios"
+    ],
+    "learning_objective": "Distinguish weighted overall margin from a simple mean of group ratios",
+    "cognitive_task": "interpret_business_evidence",
+    "difficulty_rationale": "Combine the stated assumptions with the business interpretation.",
+    "status": "validated",
+    "provenance_category": "authored_aligned_practice",
+    "validation": {
+      "schema_valid": true,
+      "deterministically_checked": true,
+      "editorially_reviewed": true,
+      "human_reviewed": false
+    },
+    "validation_calculation": {
+      "profit": 14000,
+      "revenue": 100000,
+      "margin": 0.14,
+      "group_a": 0.1,
+      "group_b": 0.3
+    },
+    "review_history": [
+      {
+        "method": "Authoring review of key, alternatives and assumptions",
+        "at": "2026-10-22"
+      }
+    ]
+  }
+]

@@ -1,0 +1,1078 @@
+{
+  "questions": [
+    {
+      "id": "PY26-01",
+      "version": 1,
+      "module": "python",
+      "scope": "Python business practice",
+      "topic": "Python calculations",
+      "concept_ids": [
+        "python-basics"
+      ],
+      "type": "mcq",
+      "difficulty": "medium",
+      "max_marks": 4,
+      "stem": "A retailer records revenue=950 and cost=710 in rupees. Python evaluates profit=revenue-cost; margin=profit/revenue. Which interpretation is correct?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "Profit is 240 and margin is approximately 25.26%"
+        },
+        {
+          "id": "B",
+          "text": "Profit is 240 and margin is approximately 33.80%"
+        },
+        {
+          "id": "C",
+          "text": "Profit is 1660 and margin is approximately 174.74%"
+        },
+        {
+          "id": "D",
+          "text": "Profit is 240 and margin is 240%"
+        }
+      ],
+      "answer": {
+        "choice_ids": [
+          "A"
+        ]
+      },
+      "solution": "Profit is 950-710=240. Revenue margin divides profit by revenue: 240/950=0.25263, or 25.26%.",
+      "option_explanations": {
+        "A": "Correct numerator and revenue denominator.",
+        "B": "This uses cost as the denominator, describing markup.",
+        "C": "Revenue plus cost is not profit.",
+        "D": "A currency amount is not itself a percentage."
+      },
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored business scenario; Python tutorial / pandas GroupBy documentation"
+        }
+      ],
+      "misconceptions": [
+        "python-basics_trace_vs_meaning"
+      ],
+      "status": "validated",
+      "provenance_category": "authored_aligned_practice",
+      "validation": {
+        "schema_valid": true,
+        "deterministically_checked": true,
+        "editorially_reviewed": true,
+        "human_reviewed": false
+      },
+      "python_check": {
+        "code": "result=[950-710,round((950-710)/950*100,2)]",
+        "expected": [
+          240,
+          25.26
+        ]
+      }
+    },
+    {
+      "id": "PY26-02",
+      "version": 1,
+      "module": "python",
+      "scope": "Python business practice",
+      "topic": "Python calculations",
+      "concept_ids": [
+        "python-basics"
+      ],
+      "type": "mcq",
+      "difficulty": "medium",
+      "max_marks": 4,
+      "stem": "A purchase form supplies quantity='4' as text and price=35 as an integer. Which Python expression gives numeric revenue of 140?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "int(quantity) * price"
+        },
+        {
+          "id": "B",
+          "text": "quantity * price"
+        },
+        {
+          "id": "C",
+          "text": "quantity + str(price)"
+        },
+        {
+          "id": "D",
+          "text": "int(quantity + str(price))"
+        }
+      ],
+      "answer": {
+        "choice_ids": [
+          "A"
+        ]
+      },
+      "solution": "Convert the validated numeric text to an integer, then multiply 4 by 35.",
+      "option_explanations": {
+        "A": "Conversion followed by multiplication yields integer 140.",
+        "B": "Repeats the string 35 times.",
+        "C": "Concatenates to the string 435.",
+        "D": "Converts concatenated text to 435."
+      },
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored business scenario; Python tutorial / pandas GroupBy documentation"
+        }
+      ],
+      "misconceptions": [
+        "python-basics_trace_vs_meaning"
+      ],
+      "status": "validated",
+      "provenance_category": "authored_aligned_practice",
+      "validation": {
+        "schema_valid": true,
+        "deterministically_checked": true,
+        "editorially_reviewed": true,
+        "human_reviewed": false
+      },
+      "python_check": {
+        "code": "quantity='4'; price=35; result=int(quantity)*price",
+        "expected": 140
+      }
+    },
+    {
+      "id": "PY26-03",
+      "version": 1,
+      "module": "python",
+      "scope": "Python business practice",
+      "topic": "Python calculations",
+      "concept_ids": [
+        "python-basics"
+      ],
+      "type": "msq",
+      "difficulty": "medium",
+      "max_marks": 4,
+      "stem": "A Python analyst sets revenue=500; cost=350; profit=revenue-cost. Which statements are correct? Select ALL.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "profit is 150"
+        },
+        {
+          "id": "B",
+          "text": "profit/revenue is 0.3"
+        },
+        {
+          "id": "C",
+          "text": "profit/cost is the revenue margin"
+        },
+        {
+          "id": "D",
+          "text": "The calculation proves why costs changed"
+        }
+      ],
+      "answer": {
+        "choice_ids": [
+          "A",
+          "B"
+        ]
+      },
+      "solution": "Profit is 150 and revenue margin is 150/500=0.3. A different denominator changes the measure, and arithmetic does not establish a cause.",
+      "option_explanations": {
+        "A": "Subtracts cost from revenue.",
+        "B": "Uses revenue as the denominator.",
+        "C": "This ratio is markup on cost.",
+        "D": "A causal explanation needs additional evidence."
+      },
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored business scenario; Python tutorial / pandas GroupBy documentation"
+        }
+      ],
+      "misconceptions": [
+        "python-basics_trace_vs_meaning"
+      ],
+      "status": "validated",
+      "provenance_category": "authored_aligned_practice",
+      "validation": {
+        "schema_valid": true,
+        "deterministically_checked": true,
+        "editorially_reviewed": true,
+        "human_reviewed": false
+      },
+      "python_check": {
+        "code": "revenue=500;cost=350;profit=revenue-cost;result=[profit==150,profit/revenue==0.3,profit/cost==profit/revenue,False]",
+        "expected": [
+          true,
+          true,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "id": "PY26-04",
+      "version": 1,
+      "module": "python",
+      "scope": "Python business practice",
+      "topic": "List methods",
+      "concept_ids": [
+        "python-lists"
+      ],
+      "type": "mcq",
+      "difficulty": "medium",
+      "max_marks": 4,
+      "stem": "Daily orders start as orders=[12,18]. The code orders.append([7,9]) runs. What is len(orders), and why?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "3, because the new list is one nested item"
+        },
+        {
+          "id": "B",
+          "text": "4, because append adds every value"
+        },
+        {
+          "id": "C",
+          "text": "2, because append returns None"
+        },
+        {
+          "id": "D",
+          "text": "46, because append sums the orders"
+        }
+      ],
+      "answer": {
+        "choice_ids": [
+          "A"
+        ]
+      },
+      "solution": "The two original items remain and the appended list is the third item. len counts outer-list items.",
+      "option_explanations": {
+        "A": "The list is one appended object.",
+        "B": "extend would add the two values separately.",
+        "C": "The return value does not prevent the list changing.",
+        "D": "Neither append nor len sums the numbers."
+      },
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored business scenario; Python tutorial / pandas GroupBy documentation"
+        }
+      ],
+      "misconceptions": [
+        "python-lists_trace_vs_meaning"
+      ],
+      "status": "validated",
+      "provenance_category": "authored_aligned_practice",
+      "validation": {
+        "schema_valid": true,
+        "deterministically_checked": true,
+        "editorially_reviewed": true,
+        "human_reviewed": false
+      },
+      "python_check": {
+        "code": "orders=[12,18];orders.append([7,9]);result=len(orders)",
+        "expected": 3
+      }
+    },
+    {
+      "id": "PY26-05",
+      "version": 1,
+      "module": "python",
+      "scope": "Python business practice",
+      "topic": "List methods",
+      "concept_ids": [
+        "python-lists"
+      ],
+      "type": "mcq",
+      "difficulty": "medium",
+      "max_marks": 4,
+      "stem": "A store keeps sales=[80,30,60]. It runs ranked=sorted(sales). Which result preserves the original recording order?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "sales=[80,30,60], ranked=[30,60,80]"
+        },
+        {
+          "id": "B",
+          "text": "sales=[30,60,80], ranked=None"
+        },
+        {
+          "id": "C",
+          "text": "sales=None, ranked=[30,60,80]"
+        },
+        {
+          "id": "D",
+          "text": "Both variables hold [80,30,60]"
+        }
+      ],
+      "answer": {
+        "choice_ids": [
+          "A"
+        ]
+      },
+      "solution": "sorted builds a new sorted list; it does not mutate the input list.",
+      "option_explanations": {
+        "A": "Correct separation of original and sorted values.",
+        "B": "This describes assigning sales.sort(), not sorted(sales).",
+        "C": "sorted does not replace sales with None.",
+        "D": "ranked is sorted, rather than unchanged."
+      },
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored business scenario; Python tutorial / pandas GroupBy documentation"
+        }
+      ],
+      "misconceptions": [
+        "python-lists_trace_vs_meaning"
+      ],
+      "status": "validated",
+      "provenance_category": "authored_aligned_practice",
+      "validation": {
+        "schema_valid": true,
+        "deterministically_checked": true,
+        "editorially_reviewed": true,
+        "human_reviewed": false
+      },
+      "python_check": {
+        "code": "sales=[80,30,60];ranked=sorted(sales);result=[sales,ranked]",
+        "expected": [
+          [
+            80,
+            30,
+            60
+          ],
+          [
+            30,
+            60,
+            80
+          ]
+        ]
+      }
+    },
+    {
+      "id": "PY26-06",
+      "version": 1,
+      "module": "python",
+      "scope": "Python business practice",
+      "topic": "List methods",
+      "concept_ids": [
+        "python-lists"
+      ],
+      "type": "msq",
+      "difficulty": "medium",
+      "max_marks": 4,
+      "stem": "A report starts with orders=[5,2]. Which independent statements are correct? Select ALL.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "orders.extend([3,4]) makes [5,2,3,4]"
+        },
+        {
+          "id": "B",
+          "text": "orders.append([3,4]) makes [5,2,[3,4]]"
+        },
+        {
+          "id": "C",
+          "text": "result=orders.sort() makes result a sorted list"
+        },
+        {
+          "id": "D",
+          "text": "sorted(orders) leaves orders unchanged"
+        }
+      ],
+      "answer": {
+        "choice_ids": [
+          "A",
+          "B",
+          "D"
+        ]
+      },
+      "solution": "extend adds each supplied item; append adds one object. sort mutates and returns None, while sorted returns a new list.",
+      "option_explanations": {
+        "A": "Correct iterable expansion.",
+        "B": "Correct nested append.",
+        "C": "sort returns None.",
+        "D": "Correct nonmutating sorted behavior."
+      },
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored business scenario; Python tutorial / pandas GroupBy documentation"
+        }
+      ],
+      "misconceptions": [
+        "python-lists_trace_vs_meaning"
+      ],
+      "status": "validated",
+      "provenance_category": "authored_aligned_practice",
+      "validation": {
+        "schema_valid": true,
+        "deterministically_checked": true,
+        "editorially_reviewed": true,
+        "human_reviewed": false
+      },
+      "python_check": {
+        "code": "a=[5,2];a.extend([3,4]);b=[5,2];b.append([3,4]);c=[5,2];r=c.sort();d=[5,2];sorted(d);result=[a==[5,2,3,4],b==[5,2,[3,4]],isinstance(r,list),d==[5,2]]",
+        "expected": [
+          true,
+          true,
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "id": "PY26-07",
+      "version": 1,
+      "module": "python",
+      "scope": "Python business practice",
+      "topic": "Loops and conditions",
+      "concept_ids": [
+        "python-control"
+      ],
+      "type": "mcq",
+      "difficulty": "medium",
+      "max_marks": 4,
+      "stem": "An analyst runs total=0, then loops over amounts=[60,140,100], adding amount to total only when amount>=100. What does total represent?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "240, the total value of qualifying transactions"
+        },
+        {
+          "id": "B",
+          "text": "2, the number of qualifying transactions"
+        },
+        {
+          "id": "C",
+          "text": "300, the value of every transaction"
+        },
+        {
+          "id": "D",
+          "text": "140, because the boundary value is excluded"
+        }
+      ],
+      "answer": {
+        "choice_ids": [
+          "A"
+        ]
+      },
+      "solution": "140 and 100 qualify, giving total 240. The accumulator sums amounts; it does not count rows.",
+      "option_explanations": {
+        "A": "Both qualifying amounts are added.",
+        "B": "This is a count rather than the requested sum.",
+        "C": "The 60 transaction does not qualify.",
+        "D": "The >= condition includes 100."
+      },
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored business scenario; Python tutorial / pandas GroupBy documentation"
+        }
+      ],
+      "misconceptions": [
+        "python-control_trace_vs_meaning"
+      ],
+      "status": "validated",
+      "provenance_category": "authored_aligned_practice",
+      "validation": {
+        "schema_valid": true,
+        "deterministically_checked": true,
+        "editorially_reviewed": true,
+        "human_reviewed": false
+      },
+      "python_check": {
+        "code": "total=0\nfor amount in [60,140,100]:\n    if amount>=100:\n        total+=amount\nresult=total",
+        "expected": 240
+      }
+    },
+    {
+      "id": "PY26-08",
+      "version": 1,
+      "module": "python",
+      "scope": "Python business practice",
+      "topic": "Loops and conditions",
+      "concept_ids": [
+        "python-control"
+      ],
+      "type": "mcq",
+      "difficulty": "medium",
+      "max_marks": 4,
+      "stem": "A Python audit loops over range(1,5), processing one daily file for each integer. How many files are processed?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "4"
+        },
+        {
+          "id": "B",
+          "text": "5"
+        },
+        {
+          "id": "C",
+          "text": "3"
+        },
+        {
+          "id": "D",
+          "text": "1"
+        }
+      ],
+      "answer": {
+        "choice_ids": [
+          "A"
+        ]
+      },
+      "solution": "range starts at 1 and excludes 5, producing 1,2,3,4.",
+      "option_explanations": {
+        "A": "Four integers are produced.",
+        "B": "The stop value is excluded.",
+        "C": "The starting value is included.",
+        "D": "The range visits more than its first item."
+      },
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored business scenario; Python tutorial / pandas GroupBy documentation"
+        }
+      ],
+      "misconceptions": [
+        "python-control_trace_vs_meaning"
+      ],
+      "status": "validated",
+      "provenance_category": "authored_aligned_practice",
+      "validation": {
+        "schema_valid": true,
+        "deterministically_checked": true,
+        "editorially_reviewed": true,
+        "human_reviewed": false
+      },
+      "python_check": {
+        "code": "result=len(list(range(1,5)))",
+        "expected": 4
+      }
+    },
+    {
+      "id": "PY26-09",
+      "version": 1,
+      "module": "python",
+      "scope": "Python business practice",
+      "topic": "Loops and conditions",
+      "concept_ids": [
+        "python-control"
+      ],
+      "type": "msq",
+      "difficulty": "medium",
+      "max_marks": 4,
+      "stem": "For each order value in [90,100,110], an analyst increments count by 1 if value>100. Which statements are correct? Select ALL.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "The final count is 1"
+        },
+        {
+          "id": "B",
+          "text": "Changing > to >= makes the count 2"
+        },
+        {
+          "id": "C",
+          "text": "count is the total monetary value of qualifying orders"
+        },
+        {
+          "id": "D",
+          "text": "Indentation determines which statement belongs inside the if block"
+        }
+      ],
+      "answer": {
+        "choice_ids": [
+          "A",
+          "B",
+          "D"
+        ]
+      },
+      "solution": "Only 110 exceeds 100. Including the boundary also includes 100. An increment of 1 counts rows; indentation defines Python blocks.",
+      "option_explanations": {
+        "A": "Only 110 qualifies.",
+        "B": "100 and 110 then qualify.",
+        "C": "The increment is one per order, not its amount.",
+        "D": "Python uses indentation for suites."
+      },
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored business scenario; Python tutorial / pandas GroupBy documentation"
+        }
+      ],
+      "misconceptions": [
+        "python-control_trace_vs_meaning"
+      ],
+      "status": "validated",
+      "provenance_category": "authored_aligned_practice",
+      "validation": {
+        "schema_valid": true,
+        "deterministically_checked": true,
+        "editorially_reviewed": true,
+        "human_reviewed": false
+      },
+      "python_check": {
+        "code": "values=[90,100,110];result=[sum(v>100 for v in values)==1,sum(v>=100 for v in values)==2,False,True]",
+        "expected": [
+          true,
+          true,
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "id": "PY26-10",
+      "version": 1,
+      "module": "python",
+      "scope": "Python business practice",
+      "topic": "pandas grouping",
+      "concept_ids": [
+        "pandas-grouping"
+      ],
+      "type": "mcq",
+      "difficulty": "medium",
+      "max_marks": 4,
+      "stem": "A pandas DataFrame has region/sales rows (West,12), (West,18), (East,9). What does df.groupby('region')['sales'].sum() report for West?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "30"
+        },
+        {
+          "id": "B",
+          "text": "15"
+        },
+        {
+          "id": "C",
+          "text": "2"
+        },
+        {
+          "id": "D",
+          "text": "39"
+        }
+      ],
+      "answer": {
+        "choice_ids": [
+          "A"
+        ]
+      },
+      "solution": "Group West has 12 and 18, whose sum is 30. Other regions do not enter this group total.",
+      "option_explanations": {
+        "A": "Correct West total.",
+        "B": "15 is the West mean.",
+        "C": "2 is the West row count.",
+        "D": "39 includes East as well."
+      },
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored business scenario; Python tutorial / pandas GroupBy documentation"
+        }
+      ],
+      "misconceptions": [
+        "pandas-grouping_trace_vs_meaning"
+      ],
+      "status": "validated",
+      "provenance_category": "authored_aligned_practice",
+      "validation": {
+        "schema_valid": true,
+        "deterministically_checked": true,
+        "editorially_reviewed": true,
+        "human_reviewed": false
+      },
+      "python_check": {
+        "code": "rows=[('West',12),('West',18),('East',9)];result=sum(v for r,v in rows if r=='West')",
+        "expected": 30
+      }
+    },
+    {
+      "id": "PY26-11",
+      "version": 1,
+      "module": "python",
+      "scope": "Python business practice",
+      "topic": "pandas grouping",
+      "concept_ids": [
+        "pandas-grouping"
+      ],
+      "type": "mcq",
+      "difficulty": "medium",
+      "max_marks": 4,
+      "stem": "A group contains three sales values: 20, missing, 40. What are group size and the selected sales column count in pandas?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "size=3, count=2"
+        },
+        {
+          "id": "B",
+          "text": "size=2, count=3"
+        },
+        {
+          "id": "C",
+          "text": "size=3, count=3"
+        },
+        {
+          "id": "D",
+          "text": "size=2, count=2"
+        }
+      ],
+      "answer": {
+        "choice_ids": [
+          "A"
+        ]
+      },
+      "solution": "size counts the three rows; sales count excludes the one missing sales value.",
+      "option_explanations": {
+        "A": "Correct rows versus observed values.",
+        "B": "The two measures are reversed.",
+        "C": "A missing sales value is excluded from count.",
+        "D": "size includes the row with missing sales."
+      },
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored business scenario; Python tutorial / pandas GroupBy documentation"
+        }
+      ],
+      "misconceptions": [
+        "pandas-grouping_trace_vs_meaning"
+      ],
+      "status": "validated",
+      "provenance_category": "authored_aligned_practice",
+      "validation": {
+        "schema_valid": true,
+        "deterministically_checked": true,
+        "editorially_reviewed": true,
+        "human_reviewed": false
+      },
+      "python_check": {
+        "code": "values=[20,None,40];result=[len(values),sum(v is not None for v in values)]",
+        "expected": [
+          3,
+          2
+        ]
+      }
+    },
+    {
+      "id": "PY26-12",
+      "version": 1,
+      "module": "python",
+      "scope": "Python business practice",
+      "topic": "pandas grouping",
+      "concept_ids": [
+        "pandas-grouping"
+      ],
+      "type": "msq",
+      "difficulty": "medium",
+      "max_marks": 4,
+      "stem": "West has sales 10 and 30; East has sales 15. Which pandas grouping interpretations are correct? Select ALL.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "West sum is 40"
+        },
+        {
+          "id": "B",
+          "text": "West mean is 20"
+        },
+        {
+          "id": "C",
+          "text": "West size is 40"
+        },
+        {
+          "id": "D",
+          "text": "A selected sales-column count measures total revenue"
+        }
+      ],
+      "answer": {
+        "choice_ids": [
+          "A",
+          "B"
+        ]
+      },
+      "solution": "For West the sum is 40, mean is 20 and row count is 2. Counts do not measure monetary totals.",
+      "option_explanations": {
+        "A": "10+30=40.",
+        "B": "(10+30)/2=20.",
+        "C": "size is 2 rows.",
+        "D": "count measures observed values, not currency."
+      },
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored business scenario; Python tutorial / pandas GroupBy documentation"
+        }
+      ],
+      "misconceptions": [
+        "pandas-grouping_trace_vs_meaning"
+      ],
+      "status": "validated",
+      "provenance_category": "authored_aligned_practice",
+      "validation": {
+        "schema_valid": true,
+        "deterministically_checked": true,
+        "editorially_reviewed": true,
+        "human_reviewed": false
+      },
+      "python_check": {
+        "code": "west=[10,30];result=[sum(west)==40,sum(west)/len(west)==20,len(west)==40,False]",
+        "expected": [
+          true,
+          true,
+          false,
+          false
+        ]
+      }
+    }
+  ],
+  "sheets": [
+    {
+      "id": "PYREF1",
+      "module": "python",
+      "term": "Python calculations",
+      "type": "Python / pandas",
+      "meaning": "A Python expression computes a value; assignment stores a reference under a variable name. State the unit and business meaning of the result.",
+      "when": "Answering a business question with python calculations",
+      "formula": "profit = revenue - cost",
+      "input": "revenue=900; cost=650; profit=revenue-cost",
+      "output": "profit is 250 in the same monetary unit",
+      "error": "A numeric result alone does not explain a business decision.",
+      "source": "PYDOC",
+      "concept_id": "python-basics"
+    },
+    {
+      "id": "PYREF2",
+      "module": "python",
+      "term": "Python types",
+      "type": "Python / pandas",
+      "meaning": "Strings hold text while integers and floats represent numbers. Convert numeric text before doing arithmetic, after validating its format.",
+      "when": "Answering a business question with python types",
+      "formula": "total = int(quantity_text) * unit_price",
+      "input": "quantity_text='3'; unit_price=40",
+      "output": "total is 120",
+      "error": "'3' * 40 repeats text; it does not calculate revenue.",
+      "source": "PYDOC",
+      "concept_id": "python-basics"
+    },
+    {
+      "id": "PYREF3",
+      "module": "python",
+      "term": "List methods",
+      "type": "Python / pandas",
+      "meaning": "A list is an ordered, mutable sequence. append adds one object; extend adds each item from an iterable.",
+      "when": "Answering a business question with list methods",
+      "formula": "items.append(value); items.extend(values)",
+      "input": "a=[10]; a.append([20,30])",
+      "output": "a is [10,[20,30]]",
+      "error": "Appending a list creates one nested item rather than two numeric entries.",
+      "source": "PYDOC",
+      "concept_id": "python-lists"
+    },
+    {
+      "id": "PYREF4",
+      "module": "python",
+      "term": "List sorting",
+      "type": "Python / pandas",
+      "meaning": "list.sort changes the existing list and returns None. sorted returns a new sorted list and keeps the input list unchanged.",
+      "when": "Answering a business question with list sorting",
+      "formula": "ordered = sorted(values)",
+      "input": "a=[9,3]; b=sorted(a)",
+      "output": "a is [9,3]; b is [3,9]",
+      "error": "Assigning values.sort() back to values replaces the variable with None.",
+      "source": "PYDOC",
+      "concept_id": "python-lists"
+    },
+    {
+      "id": "PYREF5",
+      "module": "python",
+      "term": "Loops and conditions",
+      "type": "Python / pandas",
+      "meaning": "A for loop visits each item; an if condition determines which statements run. Indentation defines the block.",
+      "when": "Answering a business question with loops and conditions",
+      "formula": "total=0\nfor amount in amounts:\n    if amount >= 100:\n        total += amount",
+      "input": "amounts=[80,120,150]",
+      "output": "total is 270",
+      "error": "Count qualifying rows and sum qualifying amounts answer different questions.",
+      "source": "PYDOC",
+      "concept_id": "python-control"
+    },
+    {
+      "id": "PYREF6",
+      "module": "python",
+      "term": "range boundaries",
+      "type": "Python / pandas",
+      "meaning": "range(start, stop) produces successive integers from start up to, but excluding, stop.",
+      "when": "Answering a business question with range boundaries",
+      "formula": "list(range(1,4))",
+      "input": "Three daily observations labelled 1 through 3",
+      "output": "[1,2,3]",
+      "error": "The stop value is excluded; range(1,3) has only two values.",
+      "source": "PYDOC",
+      "concept_id": "python-control"
+    },
+    {
+      "id": "PYREF7",
+      "module": "python",
+      "term": "pandas grouping",
+      "type": "Python / pandas",
+      "meaning": "groupby splits rows by a key; selecting a numeric column and summing or averaging answers a specific question for each group.",
+      "when": "Answering a business question with pandas grouping",
+      "formula": "df.groupby('region')['sales'].sum()",
+      "input": "West sales: 10,20; East sales: 8",
+      "output": "West total 30; East total 8",
+      "error": "A grouped average is not a grouped total; choose the measure from the business question.",
+      "source": "PYDOC",
+      "concept_id": "pandas-grouping"
+    },
+    {
+      "id": "PYREF8",
+      "module": "python",
+      "term": "pandas size and count",
+      "type": "Python / pandas",
+      "meaning": "GroupBy.size counts rows. A selected column count counts observed nonmissing values in that column.",
+      "when": "Answering a business question with pandas size and count",
+      "formula": "df.groupby('region').size(); df.groupby('region')['sales'].count()",
+      "input": "West sales: 10, missing",
+      "output": "size: 2; sales count: 1",
+      "error": "A row with missing sales is still a row, but it is not an observed sales value.",
+      "source": "PYDOC",
+      "concept_id": "pandas-grouping"
+    }
+  ],
+  "cards": [
+    {
+      "id": "PYCARD1",
+      "module": "python",
+      "front": "Python calculations: What does this mean?",
+      "back": "A Python expression computes a value; assignment stores a reference under a variable name. State the unit and business meaning of the result. Example: revenue=900; cost=650; profit=revenue-cost -> profit is 250 in the same monetary unit. Avoid: A numeric result alone does not explain a business decision.",
+      "source": "PYDOC",
+      "kind": "definition"
+    },
+    {
+      "id": "PYCARD2",
+      "module": "python",
+      "front": "List methods: What does this mean?",
+      "back": "A list is an ordered, mutable sequence. append adds one object; extend adds each item from an iterable. Example: a=[10]; a.append([20,30]) -> a is [10,[20,30]]. Avoid: Appending a list creates one nested item rather than two numeric entries.",
+      "source": "PYDOC",
+      "kind": "definition"
+    },
+    {
+      "id": "PYCARD3",
+      "module": "python",
+      "front": "Loops and conditions: What does this mean?",
+      "back": "A for loop visits each item; an if condition determines which statements run. Indentation defines the block. Example: amounts=[80,120,150] -> total is 270. Avoid: Count qualifying rows and sum qualifying amounts answer different questions.",
+      "source": "PYDOC",
+      "kind": "definition"
+    },
+    {
+      "id": "PYCARD4",
+      "module": "python",
+      "front": "pandas grouping: What does this mean?",
+      "back": "groupby splits rows by a key; selecting a numeric column and summing or averaging answers a specific question for each group. Example: West sales: 10,20; East sales: 8 -> West total 30; East total 8. Avoid: A grouped average is not a grouped total; choose the measure from the business question.",
+      "source": "PYDOC",
+      "kind": "definition"
+    }
+  ],
+  "cases": [
+    {
+      "id": "PYCASE01",
+      "version": 1,
+      "rubric_version": 1,
+      "module": "python",
+      "difficulty": "medium",
+      "title": "Store sales aggregation audit",
+      "context": "A pandas DataFrame contains region and sales columns: (West,10), (West,30), (East,15), (East,missing). The manager wants total observed sales and an honest note about missing entries. Do not assume the missing sales value is zero.",
+      "max_marks": 15,
+      "source_references": [
+        {
+          "source_id": "PYDOC",
+          "locator": "Independently authored synthetic case; pandas GroupBy documentation"
+        }
+      ],
+      "subquestions": [
+        {
+          "id": "PYCASE01-1",
+          "prompt": "Explain the difference between region sales sum, mean, size and selected-column count; calculate each for West.",
+          "max_marks": 5,
+          "rubric": [
+            {
+              "criterion": "Correct West sum 40 and mean 20",
+              "max_marks": 2
+            },
+            {
+              "criterion": "Correct size 2 and sales count 2",
+              "max_marks": 2
+            },
+            {
+              "criterion": "Distinguishes measured amounts from counts",
+              "max_marks": 1
+            }
+          ],
+          "model_answer": "West sum=40; mean=20; size=2; sales count=2. Sum and mean summarize observed amounts, whereas size and count measure rows and nonmissing observations.",
+          "common_errors": "Confusing count with revenue.",
+          "acceptable_alternatives": "Equivalent correct pandas expressions and clearly justified wording earn credit."
+        },
+        {
+          "id": "PYCASE01-2",
+          "prompt": "For East calculate size and selected sales count. Explain why the difference matters.",
+          "max_marks": 5,
+          "rubric": [
+            {
+              "criterion": "Correct size 2 and count 1",
+              "max_marks": 2
+            },
+            {
+              "criterion": "Explains the one missing sales observation",
+              "max_marks": 2
+            },
+            {
+              "criterion": "Avoids treating missing as zero",
+              "max_marks": 1
+            }
+          ],
+          "model_answer": "East has 2 rows but only 1 observed sales value. The missing amount requires investigation and cannot be assumed to be zero.",
+          "common_errors": "Replacing a missing value by a measured zero without evidence.",
+          "acceptable_alternatives": "Equivalent correct pandas expressions and clearly justified wording earn credit."
+        },
+        {
+          "id": "PYCASE01-3",
+          "prompt": "Write pandas grouping expressions for observed sales totals and missing-value diagnostics; give the manager a qualified comparison.",
+          "max_marks": 5,
+          "rubric": [
+            {
+              "criterion": "Correct groupby selected sales sum expression",
+              "max_marks": 2
+            },
+            {
+              "criterion": "Uses size and count to expose missing observations",
+              "max_marks": 2
+            },
+            {
+              "criterion": "Qualifies West versus East comparison",
+              "max_marks": 1
+            }
+          ],
+          "model_answer": "df.groupby('region')['sales'].sum(); df.groupby('region').size(); df.groupby('region')['sales'].count(). Observed totals are West 40 and East 15, but East has an unobserved sale, so this is not a complete-revenue comparison.",
+          "common_errors": "Claiming complete regional performance from incomplete observed totals.",
+          "acceptable_alternatives": "Equivalent correct pandas expressions and clearly justified wording earn credit."
+        }
+      ]
+    }
+  ],
+  "source": {
+    "id": "PYDOC",
+    "filename": "Python and pandas official documentation",
+    "path": "",
+    "sha256": "",
+    "bytes": 0,
+    "pages": 0,
+    "extraction_status": "Independent authored practice verified against official documentation",
+    "extracted_path": "",
+    "modules": [
+      "python"
+    ],
+    "question_count": 12,
+    "card_count": 4,
+    "lesson_ids": [],
+    "coverage_note": "https://docs.python.org/3/tutorial/ and https://pandas.pydata.org/docs/user_guide/groupby.html"
+  }
+}
