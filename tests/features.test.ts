@@ -9,7 +9,7 @@ import TeachBack from '../src/TeachBack';
 import {speechError,startDictation,type Recognition} from '../src/speechInput';
 import {teachBackTopics,teachBackLesson,explanationGuidance,leakageCheck} from '../src/teachBackContent';
 import {assembleSheet} from '../src/cheatContent';
-import {chartLessons,checkChart,blankChartAnswer} from '../src/chartLessons';
+import {chartLessons,checkChart,chartExpected,chartSteps,chartIssue,chartHelp,blankChartAnswer} from '../src/chartLessons';
 import {aggregate} from '../src/chartMath';
 import {analyseSummary} from '../src/summaryAnalysis';
 import {detectConcepts,questionMatches,cardMatches} from '../src/concepts';
@@ -32,7 +32,7 @@ describe('offline saved cheat sheets',()=>{
  it('distinguishes Python in-place methods, group counts and DAX/Power Query',()=>{expect(assembleSheet('list methods','Python').rows.find(r=>r.item==='sort')?.result).toMatch(/None/);expect(assembleSheet('groupby','pandas').rows.find(r=>r.item==='count')?.mistake).toMatch(/missing/);expect(assembleSheet('measures','Power BI').rows.map(r=>r.kind)).toEqual(expect.arrayContaining(['DAX measure','DAX column','Power Query transformation','Visual configuration']))});
 });
 describe('guided chart reasoning and deterministic values',()=>{
- it('accepts each suitable preferred chart and defensible alternatives',()=>{for(const l of chartLessons)for(const chart of l.charts)expect(checkChart(l,{...blankChartAnswer(),chart,x:l.x,y:l.y,aggregation:l.aggregation,group:chart==='pie'?'':l.group}),l.id+chart).toBe('')});
+ it('accepts each suitable preferred chart and defensible alternatives',()=>{for(const l of chartLessons)for(const chart of l.charts)expect(checkChart(l,{...blankChartAnswer(),chart,x:l.x,y:l.y,aggregation:chartExpected(l,{...blankChartAnswer(),chart},'aggregation'),group:chart==='pie'?'':l.group}),l.id+chart).toBe('')});
  it('explains chart, axis, aggregation and group errors without locking retry',()=>{const l=chartLessons[0],correct={...blankChartAnswer(),chart:'line',x:l.x,y:l.y,aggregation:'sum',group:''};expect(checkChart(l,{...correct,chart:'pie'})).toMatch(/does not fit/);expect(checkChart(l,{...correct,x:'sales'})).toMatch(/month/);expect(checkChart(l,{...correct,aggregation:'mean'})).toMatch(/total/);expect(checkChart(l,{...correct,group:'sales'})).toMatch(/wrong level/);expect(checkChart(l,correct)).toBe('')});
  it('computes totals rather than displaying invented chart values',()=>{const l=chartLessons[0];expect(aggregate(l.rows,'month','sales','sum',{month:'date'}).data.map(r=>r.value)).toEqual([40,48,44,55]);expect(aggregate(chartLessons[4].rows,'region','profit','sum').data.find(r=>r.name==='South')?.value).toBe(-9)});
 });
@@ -182,5 +182,50 @@ describe('speech transcript lifecycle',()=>{
  it('recovers when the browser throws during startup',()=>{
   class Broken extends FakeSpeech{start(){throw Error('unavailable')}}const states:string[]=[];
   startDictation(Broken,'','hi-IN',()=>{},(s,m)=>states.push(s+':'+m));expect(states.at(-1)).toMatch(/^idle:.*could not start/);
+ });
+});
+
+
+describe('easy chart help for the exact mistaken step',()=>{
+ const right=(id:string,chart?:string)=>{const l=chartLessons.find(l=>l.id===id)!;const a={...blankChartAnswer(),chart:chart||l.charts[0],x:l.x,y:l.y,aggregation:l.aggregation,group:l.group};a.aggregation=chartExpected(l,a,'aggregation');if(a.chart==='pie')a.group='';return {l,a}};
+ it('checks only the visible step instead of leaking a later error into Step 1',()=>{
+  const {l,a}=right('spending');a.aggregation='sum';
+  expect(chartIssue(l,a,'chart')).toBeNull();expect(chartIssue(l,a,'x')).toBeNull();
+  const issue=chartIssue(l,a)!;expect(issue.field).toBe('aggregation');expect(issue.step).toBe(2);expect(issue.total).toBe(3);
+  expect(issue.selected).toBe('Sum — total');expect(issue.choice).toBe('Frequency — count values in bins');expect(issue.reason).toMatch(/Sum adds rupees/);
+  expect(checkChart(l,a)).toMatch(/Step 3 of 3 — Choose a calculation/);
+ });
+ it('tells a beginner exactly which field to choose for every axis or value mistake',()=>{
+  for(const id of ['monthly','category','advertising','profit','spending']){
+   const {l,a}=right(id),wrong={...a,x:id==='spending'?'customer':l.y};const issue=chartIssue(l,wrong)!;
+   expect(issue.field).toBe('x');expect(issue.step).toBe(1);expect(issue.choice).toBe(l.x);expect(issue.reason.length).toBeGreaterThan(70);
+   if(l.y){const y=chartIssue(l,{...a,y:l.x})!;expect(y.field).toBe('y');expect(y.step).toBe(2);expect(y.choice).toBe(l.y);}
+  }
+ });
+ it('explains the actual wrong calculation differently for Sum, Average and Count',()=>{
+  const {l,a}=right('spending');const sum=chartHelp(l,{...a,aggregation:'sum'},'aggregation'),mean=chartHelp(l,{...a,aggregation:'mean'},'aggregation'),count=chartHelp(l,{...a,aggregation:'count'},'aggregation');
+  expect(sum.reason).toMatch(/adds rupees/);expect(mean.reason).toMatch(/average purchase/);expect(count.reason).toMatch(/overall count/);expect(new Set([sum.reason,mean.reason,count.reason]).size).toBe(3);
+  const sales=right('monthly');expect(chartHelp(sales.l,{...sales.a,aggregation:'count'},'aggregation').reason).toMatch(/counts records/);
+  const dots=right('advertising');expect(chartHelp(dots.l,{...dots.a,aggregation:'sum'},'aggregation').reason).toMatch(/combines stores/);
+ });
+ it('explains the wrong chart and recommends a suitable chart for each business question',()=>{
+  for(const l of chartLessons){const bad=['line','bar','scatter','histogram','box','pie'].filter(c=>!l.charts.includes(c));const reasons=bad.map(chart=>chartHelp(l,{...blankChartAnswer(),chart},'chart'));
+   expect(new Set(reasons.map(r=>r.reason)).size).toBe(bad.length);
+   for(const hint of reasons){expect(hint.step).toBe(0);expect(hint.value).toBe(l.charts[0]);expect(hint.valid).toBe(false);expect(hint.reason).toMatch(/does not fit/);}
+  }
+ });
+ it('keeps a suitable alternative and gives help for the requested field regardless of earlier hint count',()=>{
+  const {l,a}=right('monthly','bar');a.hint=99;const help=chartHelp(l,a,'chart');expect(help.valid).toBe(true);expect(help.value).toBe('bar');
+  expect(chartHelp(l,a,'aggregation').step).toBe(3);expect(chartHelp(l,a,'x').value).toBe('month');
+  expect(chartHelp(l,{...a,group:'sales'},'group').step).toBe(4);expect(chartHelp(l,{...a,group:'sales'},'group').choice).toBe('channel');
+ });
+ it('uses three steps for distributions, four for pie, and five for axis charts',()=>{
+  const spending=right('spending'),pie=right('category','pie'),line=right('monthly');
+  expect(chartSteps(spending.l,spending.a).map(s=>s.field)).toEqual(['chart','x','aggregation']);
+  expect(chartSteps(pie.l,pie.a).map(s=>s.field)).toEqual(['chart','x','y','aggregation']);expect(chartSteps(line.l,line.a)).toHaveLength(5);
+ });
+ it('keeps raw spending for a box plot and counts bins only for a histogram',()=>{
+  const box=right('spending','box'),hist=right('spending','histogram');expect(box.a.aggregation).toBe('none');expect(checkChart(box.l,box.a)).toBe('');expect(hist.a.aggregation).toBe('frequency');
+  expect(chartHelp(box.l,{...box.a,aggregation:'sum'},'aggregation').reason).toMatch(/median and spread/);
  });
 });

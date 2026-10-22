@@ -80,3 +80,8 @@ Three render regressions cover a blank form with saved Class 13/Class 30 history
 ### Guided explanation update (22 October 2026)
 
 Browser verification reproduced the reported beginner sentence, displayed timing/leakage guidance, checked a wrong choice, retried the correct choice, and restored the saved answer after refreshing. The recap and Explain step use the same source topic names. Quick-check answers are saved with their question snapshot; original test marks remain separate. Automated suite: 100 tests across six files; public-safe suite: 46 tests across three files. Production TypeScript/build and public privacy audit pass. Live microphone input still requires testing with the learner’s actual device and browser.
+
+
+### Step-specific chart hints (22 October 2026)
+
+107 tests across six files pass, including 53 public-safe tests. New checks cover validation of the visible field, exact error-step mapping for distributions/pie/axis charts, distinct explanations for incorrect calculations and chart types, preserving suitable alternatives, and raw values for box plots. Browser checks verified wrong chart (Step 1), wrong spending field (Step 2), Sum and Average with distinct feedback (Step 3), current-step help, applying one suggestion, and successful chart creation with no console errors. No saved class notes or completed chart runs were cleared.
