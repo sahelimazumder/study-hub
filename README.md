@@ -1,5 +1,7 @@
 # Business Analytics Study Hub
 
+**Live website:** [https://sahelimazumder.github.io/study-hub/](https://sahelimazumder.github.io/study-hub/) · [GitHub repository](https://github.com/sahelimazumder/study-hub)
+
 A beginner-friendly React/TypeScript application for class notes, guided learning, practice and revision. Profile branding is editable; assessment design follows the reasoning patterns in the supplied IIM Ranchi examples, without claiming official institute questions or examination predictions.
 
 ## Run locally

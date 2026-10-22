@@ -2,7 +2,13 @@
 
 ## Status
 
-Publishing requested for the GitHub account `sahelimazumder`. The sanitized source package is prepared; account sign-in and the first successful Pages deployment are still pending. No public website link is verified yet.
+Published and verified on 22 October 2026.
+
+- Website: [Business Analytics Study Hub](https://sahelimazumder.github.io/study-hub/).
+- Repository: [sahelimazumder/study-hub](https://github.com/sahelimazumder/study-hub).
+- First successful deployment: [GitHub Actions run](https://github.com/sahelimazumder/study-hub/actions/runs/39789608435).
+- The public release includes 97 authored questions, six cases, and the current study workflows. Private course originals and personal browser records were excluded.
+- GitHub CI passed the 46 public-safe tests, production build and source/privacy audit. Anonymous browser checks verified the empty Home form, Practice and Charts with no console errors.
 
 ## Publishable artifact and source boundary
 
