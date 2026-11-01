@@ -33,7 +33,7 @@ function fourLines(title:string,text:string,ids:string[]):SummaryTopic['lines']{
 }
 // Local, source-based simplification: keep qualifiers and original notes visible.
 export function simpleSummaryText(text:string){
- return clean(text).replace(/^\s*\d+[.)]\s+/gm,'')
+ return clean(text).replace(/^\s*\d+[.)](?:\s+|$)/gm,'')
  .replace(/Data provides competitive advantage only under specific conditions, not automatically/gi,'Having data does not automatically put a business ahead. It helps only when the right conditions are met')
  .replace(/How quickly does the marginal value of data diminish\?/gi,'As we collect more data, how quickly does each new piece stop adding much value? If extra data barely improves the result, collecting more may add little benefit.')
  .replace(/Is the improvement from data easily imitated\?/gi,'Can other businesses easily copy the improvement made using the data? If copying it is easy, the business may not stay ahead for long.')

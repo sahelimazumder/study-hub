@@ -239,7 +239,7 @@ describe('context-first class reading',()=>{
  });
  it('does not turn colon bullets and numbered process details into empty topic cards',()=>{
   const topics=extractSummaryTopics('## Working with data\nThe metaphor "data is the new oil" represents a three-step process:\n1. Collection: Gather records.\n2. Preparation: Clean the records.\n3. Use: Answer a question.');
-  expect(topics).toHaveLength(1);expect(topics[0].sourceText).toMatch(/Collection/);expect(topics[0].explanation.join(' ')).toMatch(/collecting data is only a start/);expect(topics[0].explanation.join(' ')).not.toMatch(/No worked example|does not give another/);
+  expect(topics).toHaveLength(1);expect(topics[0].sourceText).toMatch(/Collection/);expect(topics[0].explanation.some(line=>/^\d+[.)]$/.test(line))).toBe(false);expect(topics[0].explanation.join(' ')).toMatch(/collecting data is only a start/);expect(topics[0].explanation.join(' ')).not.toMatch(/No worked example|does not give another/);
  });
  it('recognizes copied headings without Markdown and retains their opening explanation',()=>{
   const topics=extractSummaryTopics('Data as a Competitive Asset\nWhen Does Data Provide Competitive Advantage?\nData helps only in certain situations.\nThree key criteria must be evaluated:\nHow quickly does the marginal value of data diminish?');
