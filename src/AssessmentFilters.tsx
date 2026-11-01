@@ -1,0 +1,12 @@
+import {useStudy} from './store';
+import {assessmentScope,type AssessmentSelection} from './assessmentScope';
+import {classLabel} from './classScope';
+export default function AssessmentFilters(){
+ const {state,update}=useStudy(),scope=assessmentScope(state),selection=scope.selection;
+ function patch(p:Partial<AssessmentSelection>){update(s=>({...s,assessmentSelection:{...assessmentScope(s).selection,...p}}));}
+ return <section className="assessment-filters panel" aria-label="Choose sessions and topics"><h2>Choose sessions and topics</h2><p>Pick several saved sessions to practise them together. This selection also carries over between Practice and Create a Test.</p>
+ <label className="check-label"><input type="checkbox" checked={selection.mode==='all'} onChange={e=>patch({mode:e.target.checked?'all':'sessions'})}/>Browse all course content</label>
+ <fieldset><legend>Sessions / module numbers — select any</legend>{state.classSummaries.length?state.classSummaries.map(c=><label className="check-label" key={c.id}><input type="checkbox" checked={selection.mode==='sessions'&&selection.classIds.includes(c.id)} onChange={e=>patch({mode:'sessions',classIds:e.target.checked?[...new Set([...(selection.mode==='all'?[]:selection.classIds),c.id])]:selection.classIds.filter(id=>id!==c.id),topicKeys:null})}/>{classLabel(c)}</label>):<p>No saved sessions yet. Paste each session’s summary on Home first, then select it here.</p>}</fieldset>
+ {selection.mode==='sessions'&&<><p><strong>Selected:</strong> {scope.label}</p><fieldset><legend>Topics from these summaries — select any</legend><div className="button-row"><button className="secondary" onClick={()=>patch({topicKeys:null})}>Select all topics</button><button className="secondary" onClick={()=>patch({topicKeys:[]})}>Clear topics</button></div>{scope.classes.map(c=><div key={c.id}><h3>{classLabel(c)}</h3>{scope.topics.filter(t=>t.classId===c.id).map(t=><label key={t.key} className="check-label"><input type="checkbox" checked={selection.topicKeys===null||selection.topicKeys.includes(t.key)} onChange={e=>{const current=selection.topicKeys??scope.topics.map(t=>t.key);patch({topicKeys:e.target.checked?[...current,t.key]:current.filter(key=>key!==t.key)})}}/>{t.label}{!t.conceptIds.length&&<small> — No verified practice match yet</small>}</label>)}</div>)}{!scope.topics.length&&<p>Select a saved session to see its own topic names.</p>}</fieldset>{!scope.chosen.length&&<p role="status">No topics selected. Select at least one topic to practise or build a test.</p>}</>}
+ </section>;
+}

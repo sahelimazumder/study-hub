@@ -69,3 +69,6 @@ The GitHub workflow deploys updates pushed to main and also supports a manual ru
 ## Supplementary references
 
 The new supplementary reference tables and tool guidance were checked against [Python data structures](https://docs.python.org/3/tutorial/datastructures.html), [pandas grouping](https://pandas.pydata.org/docs/user_guide/groupby.html), [Power BI calculation choices](https://learn.microsoft.com/en-us/power-bi/transform-model/desktop-calculations-options) and [Tableau shelves](https://help.tableau.com/current/pro/desktop/en-us/buildmanual_shelves.htm). They are supplementary beginner guidance, separate from the supplied course coverage.
+
+
+Practice and Create a Test now share a multi-select session/module filter. Topics are named from saved class-summary headings; unsupported topics do not pull in unrelated practice. Select Browse all course content explicitly for the whole bank. Full 150-mark tests use 20 four-mark MCQs, 10 four-mark MSQs and two 15-mark cases. Objective marks are automatic; written marks are rubric-guided self-assessment, with a pending total until every criterion has marks and evidence. Blank case answers cannot receive positive marks.

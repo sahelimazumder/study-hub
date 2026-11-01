@@ -1,9 +1,10 @@
+import {assessmentScope} from '../src/assessmentScope';
 import {createElement} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import Today from '../src/Today';
 import {StudyContext} from '../src/store';
 import {describe,it,expect,vi,beforeEach,afterEach} from 'vitest';
-import {freshState,parseBackup,mergeBackup,score,validateQuestion,createExam} from '../src/core';
+import {freshState,parseBackup,mergeBackup,score,validateQuestion,createExam,submitExam,grade,saveReview,reviewKey} from '../src/core';
 import {proposeSession,putSession,planSession,startSession,stages} from '../src/studyEngine';
 import TeachBack from '../src/TeachBack';
 import {speechError,startDictation,type Recognition} from '../src/speechInput';
@@ -249,4 +250,21 @@ describe('context-first class reading',()=>{
   const detail=Array.from({length:8},(_,i)=>`Stage ${i+1} connects each order to its delivery record and its customer support record. `).join('');const topics=extractSummaryTopics('## Service blueprints\n'+detail+'\n# Previously covered\nRegression and primary keys.');
   expect(topics).toHaveLength(1);expect(topics[0].explanation.join(' ').length).toBeGreaterThan(500);expect(topics[0].sourceText).not.toMatch(/Regression/);
  });
+});
+
+
+describe('multi-session assessment filters',()=>{
+ function example(){const state=freshState();state.classSummaries=[{id:'s10',title:'Session 10',chapter:'Module 10',date:'',updatedAt:1,text:'## Primary keys\nA primary key is unique and non-null.\n## Composite keys\nA composite key uses a pair of fields.'},{id:'s14',title:'Session 14',date:'',updatedAt:2,text:'## Regression slopes\nRead a regression slope while holding another predictor constant.'}];state.assessmentSelection={mode:'sessions',classIds:['s10','s14'],topicKeys:null};return state;}
+ it('combines only explicitly selected sessions and uses their summary headings',()=>{const state=example(),scope=assessmentScope(state);expect(scope.classIds).toEqual(['s10','s14']);expect(scope.topics.map(t=>t.label)).toEqual(['Primary keys','Composite keys','Regression slopes']);expect(scope.ids).toEqual(expect.arrayContaining(['primary','composite','regression']));expect(scope.ids).not.toContain('governance');const comparison=bank.questions.find(q=>/Adding five predictors/.test(q.stem));if(comparison)expect(scope.matches(comparison)).toBe(false);});
+ it('supports multiple topics, clearing all, and a session without practice matches',()=>{const state=example(),scope=assessmentScope(state);state.assessmentSelection!.topicKeys=[scope.topics[0].key,scope.topics[2].key];expect(assessmentScope(state).ids).toEqual(['primary','regression']);state.assessmentSelection!.topicKeys=[];expect(assessmentScope(state).ids).toEqual([]);expect(bank.questions.filter(assessmentScope(state).matches)).toHaveLength(0);state.assessmentSelection!.classIds=[];state.assessmentSelection!.topicKeys=null;expect(assessmentScope(state).ids).toEqual([]);state.assessmentSelection!.mode='all';expect(assessmentScope(state).ids).toBeUndefined();expect(assessmentScope(state).chosen).toEqual([]);});
+ it('retains the multi-session selection and test labels through backup import',()=>{const state=example();const e=createExam(bank.questions,bank.cases,2,1,1,15);e.classIds=['s10','s14'];e.topicKeys=['s10::summary-0-primary-keys'];e.topicTitles=['Session 10 — Primary keys','Session 14 — Regression slopes'];state.exams=[e];expect(parseBackup(JSON.parse(JSON.stringify(state)))).toEqual(state);});
+});
+
+describe('complete 150-mark paper audit',()=>{
+ function paper(){return createExam(bank.questions,bank.cases,20,10,2,90);}
+ function fullAwards(e:ReturnType<typeof paper>){const awards:Record<string,{marks:number;rationale:string}>={};for(const c of e.cases)for(const sub of c.subquestions)sub.rubric.forEach((r,i)=>awards[reviewKey(c.id,sub.id,i)]={marks:r.max_marks,rationale:'Response evidence meets this criterion.'});return awards;}
+ it('checks all 30 objective items and all case parts without scaling a pending score to 150',()=>{let e=paper();expect(e.questions).toHaveLength(30);expect(new Set(e.questions.map(q=>q.id)).size).toBe(30);const partIds=e.cases.flatMap(c=>c.subquestions.map(s=>s.id));expect(new Set(partIds).size).toBe(partIds.length);for(const q of e.questions)e.responses[q.id]=q.answer.choice_ids!;for(const c of e.cases)for(const sub of c.subquestions)e.responses[sub.id]='Written calculations, explanation and recommendation.';e=submitExam(e);expect(grade(e)).toMatchObject({objective:120,subjective:null,total:null,max:150});const awards=fullAwards(e);const missing={...awards};delete missing[Object.keys(missing)[0]];expect(()=>saveReview(e,missing)).toThrow(/Every criterion/);e=saveReview(e,awards);expect(grade(e)).toMatchObject({objective:120,subjective:30,total:150,max:150});expect(e.reviewHistory).toHaveLength(1);});
+ it('never awards positive subjective marks to a blank answer or accepts nonfinite marks',()=>{const e=submitExam(paper()),awards=fullAwards(e);expect(()=>saveReview(e,awards)).toThrow(/blank case answer/);for(const key of Object.keys(awards))awards[key]={marks:0,rationale:'Blank response contains no evidence.'};expect(grade(saveReview(e,awards))).toMatchObject({objective:0,subjective:0,total:0,max:150});awards[Object.keys(awards)[0]].marks=NaN;expect(()=>saveReview(e,awards)).toThrow(/bounded mark/);expect(grade({...e,review:awards}).total).toBeNull();});
+ it('keeps every case rubric aligned with its marks and excludes stray review keys',()=>{for(const c of bank.cases){expect(c.subquestions.reduce((n,s)=>n+s.max_marks,0)).toBe(c.max_marks);for(const sub of c.subquestions)expect(sub.rubric.reduce((n,r)=>n+r.max_marks,0)).toBe(sub.max_marks);}const e=submitExam(paper());const awards=fullAwards(e);for(const key of Object.keys(awards))awards[key]={marks:0,rationale:'No response evidence.'};awards.unrelated={marks:100,rationale:'Not an actual criterion'};const reviewed=saveReview(e,awards);expect(reviewed.review).not.toHaveProperty('unrelated');expect(grade(reviewed).total).toBe(0);});
+ it('applies the same saved exact/partial MSQ policy to each answer and the total',()=>{const e=paper(),q=e.questions.find(q=>q.type==='msq'&&q.answer.choice_ids!.length>1)!;expect(q).toBeDefined();e.responses[q.id]=[q.answer.choice_ids![0]];expect(grade(e).objective).toBe(0);e.policy={msq:'partial',negative:1};expect(grade(e).objective).toBe(score(q,e.responses[q.id],e.policy));e.responses[q.id]=[];expect(grade(e).objective).toBe(0);});
 });

@@ -90,3 +90,8 @@ Browser verification reproduced the reported beginner sentence, displayed timing
 ### Contextual class reader (1 November 2026)
 
 111 regression tests pass, including 57 public-safe tests. The reader preserves parent headings, introductory text and nested criteria/process steps; colon bullets inside a section no longer become separate empty topics. Source-based language rules simplify the supplied business-data example. Original source remains available, and unrelated classes are excluded. Long sections are no longer silently cut to four lines. This is a local rule-based reader, not an unrestricted AI paraphraser; unfamiliar prose may remain close to the supplied wording. Existing browser records are not deleted or rewritten.
+
+
+### Multi-session assessment and scoring audit (1 November 2026)
+
+118 regression tests pass. Selection tests cover combining saved sessions, selecting several source-heading topics, empty selections, incidental NULL mentions in primary-key notes, and backup round trips. Scoring tests simulate a complete 150-mark paper: all 30 objective answers, both case rubrics, pending written marks, 150/150 after evidence-based self-assessment, 0/150 with blank answers reviewed as zero, missing criteria, nonfinite awards, exact/partial MSQs and stray review-key exclusion. Case rubric totals match every case/subquestion maximum. Written reasoning is not graded by AI; the user remains responsible for judging it against the rubric. Historical response snapshots remain saved.

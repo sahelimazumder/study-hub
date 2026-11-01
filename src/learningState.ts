@@ -23,6 +23,7 @@ export function learningStateShape(question:z.ZodTypeAny,response:z.ZodTypeAny){
  const count=finite.int().nonnegative();
  const card=z.object({id:z.string(),module:z.string(),front:z.string(),back:z.string(),source:z.string(),kind:z.string()});
  return {
+  assessmentSelection:z.object({mode:z.enum(['all','sessions']),classIds:z.array(z.string()),topicKeys:z.array(z.string()).nullable()}).optional(),
   studyClassId:z.string().nullable().optional(),
   chartRuns:z.array(z.object({id:z.string(),lessonId:z.string(),at:finite,classId:z.string().nullable(),answer:z.object({chart:z.string(),x:z.string(),y:z.string(),aggregation:z.string(),group:z.string(),hint:count,attempts:count,accepted:z.boolean()})})).optional(),
   savedSheets:z.array(z.object({id:z.string(),name:z.string(),prompt:z.string(),topic:z.string(),classId:z.string().nullable(),updatedAt:finite,rows:z.array(z.object({item:z.string(),kind:z.string(),when:z.string(),syntax:z.string(),example:z.string(),result:z.string(),mistake:z.string()}))})).default([]),
