@@ -87,10 +87,10 @@ describe('shared class focus and source summary topics',()=>{
  });
  it('extracts plain and Markdown topic headings in order without treating containers as missing topics',()=>{
   const text='# Faculty Session 13\n## Overview\nA Python class.\n## Main Topics\n### Variables and Assignment\nVariables serve as placeholders for storing values using the assignment operator (=).\n- Integer (int): Whole numbers.\n- String (str): Text data.\n# Previously covered\nPrimary keys and regression.';
-  const topics=extractSummaryTopics(text);expect(topics.map(t=>t.title)).toEqual(['Variables and Assignment','Integer (int)','String (str)']);for(const t of topics){expect(t.lines).toHaveLength(4);expect(t.lines.every(line=>line.length>10)).toBe(true);expect(t.sourceText.length).toBeGreaterThan(0)}expect(topics[0].lines[0]).toMatch(/name.*value/);expect(topics[0].lines[1]).toMatch(/assignment operator/);expect(topics[1].lines[0]).toMatch(/whole number/);
+  const topics=extractSummaryTopics(text);expect(topics.map(t=>t.title)).toEqual(['Variables and Assignment']);for(const t of topics){expect(t.lines).toHaveLength(4);expect(t.lines.every(line=>line.length>10)).toBe(true);expect(t.sourceText.length).toBeGreaterThan(0)}expect(topics[0].lines[0]).toMatch(/name.*value/);expect(topics[0].lines[1]).toMatch(/assignment operator/);expect(topics[0].sourceText).toContain('Integer (int)');expect(topics[0].sourceText).toContain('String (str)');
  });
  it('retains unfamiliar summary topics for reading without inventing bank questions',()=>{
-  const topics=extractSummaryTopics('## Service blueprints\nA service blueprint maps customer-facing steps and the supporting work.');expect(topics[0].title).toBe('Service blueprints');expect(topics[0].lines[0]).toMatch(/customer-facing/);expect(topics[0].conceptIds).toEqual([]);expect(topics[0].lines[2]).toMatch(/No worked example/);
+  const topics=extractSummaryTopics('## Service blueprints\nA service blueprint maps customer-facing steps and the supporting work.');expect(topics[0].title).toBe('Service blueprints');expect(topics[0].lines[0]).toMatch(/customer-facing/);expect(topics[0].conceptIds).toEqual([]);expect(topics[0].explanation.join(' ')).toMatch(/customer-facing/);expect(topics[0].explanation.join(' ')).not.toMatch(/No worked example/);
  });
  it('restricts sheets, chart choices, cases and activity to the chosen class',()=>{
   const state=freshState();state.classSummaries=[{id:'p',title:'Session 13',text:'pandas groupby',date:'',updatedAt:1}];state.studyClassId='p';const ids=scopeTopics(state);expect(scopedSheetRows(state).map(r=>r.item)).toEqual(['pandas grouping','pandas size and count']);expect(scopedSheetRows(state,'primary keys')).toEqual([]);expect(chartIdsForTopics(ids)).toEqual([]);expect(bank.cases.filter(c=>caseMatchesTopics(c,ids)).map(c=>c.id)).toEqual(['PYCASE01']);
@@ -227,5 +227,26 @@ describe('easy chart help for the exact mistaken step',()=>{
  it('keeps raw spending for a box plot and counts bins only for a histogram',()=>{
   const box=right('spending','box'),hist=right('spending','histogram');expect(box.a.aggregation).toBe('none');expect(checkChart(box.l,box.a)).toBe('');expect(hist.a.aggregation).toBe('frequency');
   expect(chartHelp(box.l,{...box.a,aggregation:'sum'},'aggregation').reason).toMatch(/median and spread/);
+ });
+});
+
+
+describe('context-first class reading',()=>{
+ const notes='# Data as a Competitive Asset\n## When Does Data Provide Competitive Advantage?\n- Data provides competitive advantage only under specific conditions, not automatically\n- Three key criteria must be evaluated:\n  - How quickly does the marginal value of data diminish?\n  - Is the improvement from data easily imitated?\n  - How fast can insights be incorporated into products?\n- Data creates advantage primarily when it generates network effects (value increases as more users adopt)\n- Trends can become obsolete quickly; timing of implementation is critical\n## Evolution of Business Models\nBusiness models have changed over time.';
+ it('keeps the parent heading and all nested criteria in one contextual explanation',()=>{
+  const topics=extractSummaryTopics(notes);expect(topics).toHaveLength(2);expect(topics[0].title).toBe('When does data help a business do better?');expect(topics[0].headingPath).toEqual(['Data as a Competitive Asset']);expect(topics[0].context).toMatch(/when data can help/);
+  const explanation=topics[0].explanation.join(' ');expect(explanation).toMatch(/each new piece/);expect(explanation).toMatch(/easily copy/);expect(explanation).toMatch(/improve the product/);expect(explanation).toMatch(/more useful as more people/);expect(explanation).not.toMatch(/marginal value|incorporated|imitated/);expect(topics[0].sourceText).toMatch(/marginal value/);
+ });
+ it('does not turn colon bullets and numbered process details into empty topic cards',()=>{
+  const topics=extractSummaryTopics('## Working with data\nThe metaphor "data is the new oil" represents a three-step process:\n1. Collection: Gather records.\n2. Preparation: Clean the records.\n3. Use: Answer a question.');
+  expect(topics).toHaveLength(1);expect(topics[0].sourceText).toMatch(/Collection/);expect(topics[0].explanation.join(' ')).toMatch(/collecting data is only a start/);expect(topics[0].explanation.join(' ')).not.toMatch(/No worked example|does not give another/);
+ });
+ it('recognizes copied headings without Markdown and retains their opening explanation',()=>{
+  const topics=extractSummaryTopics('Data as a Competitive Asset\nWhen Does Data Provide Competitive Advantage?\nData helps only in certain situations.\nThree key criteria must be evaluated:\nHow quickly does the marginal value of data diminish?');
+  expect(topics).toHaveLength(1);expect(topics[0].sourceText).toMatch(/certain situations/);expect(topics[0].headingPath).toContain('Data as a Competitive Asset');
+ });
+ it('does not truncate long explanations or borrow other classes to fill a card',()=>{
+  const detail=Array.from({length:8},(_,i)=>`Stage ${i+1} connects each order to its delivery record and its customer support record. `).join('');const topics=extractSummaryTopics('## Service blueprints\n'+detail+'\n# Previously covered\nRegression and primary keys.');
+  expect(topics).toHaveLength(1);expect(topics[0].explanation.join(' ').length).toBeGreaterThan(500);expect(topics[0].sourceText).not.toMatch(/Regression/);
  });
 });

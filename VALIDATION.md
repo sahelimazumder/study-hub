@@ -85,3 +85,8 @@ Browser verification reproduced the reported beginner sentence, displayed timing
 ### Step-specific chart hints (22 October 2026)
 
 107 tests across six files pass, including 53 public-safe tests. New checks cover validation of the visible field, exact error-step mapping for distributions/pie/axis charts, distinct explanations for incorrect calculations and chart types, preserving suitable alternatives, and raw values for box plots. Browser checks verified wrong chart (Step 1), wrong spending field (Step 2), Sum and Average with distinct feedback (Step 3), current-step help, applying one suggestion, and successful chart creation with no console errors. No saved class notes or completed chart runs were cleared.
+
+
+### Contextual class reader (1 November 2026)
+
+111 regression tests pass, including 57 public-safe tests. The reader preserves parent headings, introductory text and nested criteria/process steps; colon bullets inside a section no longer become separate empty topics. Source-based language rules simplify the supplied business-data example. Original source remains available, and unrelated classes are excluded. Long sections are no longer silently cut to four lines. This is a local rule-based reader, not an unrestricted AI paraphraser; unfamiliar prose may remain close to the supplied wording. Existing browser records are not deleted or rewritten.

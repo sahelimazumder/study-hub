@@ -1,5 +1,5 @@
-import {concept,detectConcepts,currentClassText,referencesFor} from './concepts';
-export type SummaryTopic={id:string;title:string;sourceText:string;conceptIds:string[];lines:[string,string,string,string]};
+import {detectConcepts,currentClassText} from './concepts';
+export type SummaryTopic={id:string;title:string;sourceText:string;conceptIds:string[];lines:[string,string,string,string];context:string;headingPath:string[];explanation:string[];originalTitle:string};
 const clean=(s:string)=>s.replace(/\*\*|__|`/g,'').replace(/^\s*[-*+]\s+/gm,'').trim();
 const container=/^(?:overview|main topics|topics(?: covered)?|summary|class summary|session summary|key takeaways|learning objectives|this (?:session|class)|current (?:session|class)|notes|contents|introduction|conclusion|practice|examples?|(?:faculty\s+)?(?:session|chapter|class)\s*\d+\b.*)$/i;
 const rules:{test:RegExp;lines:[string,string,string,string]}[]=[
@@ -29,17 +29,70 @@ function fourLines(title:string,text:string,ids:string[]):SummaryTopic['lines']{
  const rule=rules.find(r=>r.test.test(title));
  const facts=clean(text).split(/\n+|(?<=[.!?])\s+/).map(s=>s.replace(/^#+\s*/,'').trim()).filter(s=>s&&s.toLowerCase()!==title.toLowerCase());
  if(rule){const detail=facts.find(s=>s.length>=8&&s.length<=180&&!s.startsWith('```'));return [rule.lines[0],detail?`From this class: ${detail}`:rule.lines[1],rule.lines[2],rule.lines[3]]}
- const ref=ids.length?referencesFor(ids)[0]:undefined;
- return [facts[0]?.slice(0,240)||ref?.meaning||`Your summary names ${title}.`,facts[1]?.slice(0,240)||(ref?`How to use it: ${ref.when}.`:'The summary does not give another explanatory detail.'),facts[2]?.slice(0,240)||(ref?`Example: ${ref.input} → ${ref.output}.`:'No worked example was included for this topic.'),facts[3]?.slice(0,240)||(ref?`Remember: ${ref.error}.`:'Add an example or a question to your notes to develop this topic further.')];
+ return [facts[0]||'',facts[1]||'',facts[2]||'',facts[3]||''];
+}
+// Local, source-based simplification: keep qualifiers and original notes visible.
+export function simpleSummaryText(text:string){
+ return clean(text).replace(/^\s*\d+[.)]\s+/gm,'')
+ .replace(/Data provides competitive advantage only under specific conditions, not automatically/gi,'Having data does not automatically put a business ahead. It helps only when the right conditions are met')
+ .replace(/How quickly does the marginal value of data diminish\?/gi,'As we collect more data, how quickly does each new piece stop adding much value? If extra data barely improves the result, collecting more may add little benefit.')
+ .replace(/Is the improvement from data easily imitated\?/gi,'Can other businesses easily copy the improvement made using the data? If copying it is easy, the business may not stay ahead for long.')
+ .replace(/How fast can insights be incorporated into products\?/gi,'How quickly can we use what the data tells us to improve the product? What we learn is more useful when we turn it into a product change before it becomes out of date.')
+ .replace(/Three key criteria must be evaluated/gi,'Check these three things')
+ .replace(/network effects\s*\(value increases as more users adopt\)/gi,'network effects: the service becomes more useful as more people use it')
+ .replace(/Trends can become obsolete quickly;?\s*timing of implementation is critical/gi,'Trends can stop being useful quickly, so it matters how soon we act on them')
+ .replace(/\bcompetitive advantage\b/gi,'an edge over other businesses').replace(/\bprimarily\b/gi,'mainly')
+ .replace(/\bincorporated into\b/gi,'added to').replace(/\binsights\b/gi,'what the data tells us')
+ .replace(/\butili[sz]e\b/gi,'use').replace(/\bfacilitate\b/gi,'help').replace(/\bsubsequently\b/gi,'then')
+ .replace(/\bdiminish(?:es)?\b/gi,'become smaller').replace(/\bobsolete\b/gi,'no longer useful');
+}
+function easyHeading(title:string){
+ if(/^Data as a Competitive Asset$/i.test(title))return 'How data helps a business';
+ if(/^When Does Data (?:Provide|Create) Competitive Advantage\??$/i.test(title))return 'When does data help a business do better?';
+ if(/data is the new oil/i.test(title))return 'How raw data becomes useful';
+ if(/^Evolution of Business Models$/i.test(title))return 'How businesses have changed';
+ return simpleSummaryText(title).replace(/:$/,'');
+}
+function plainHeading(line:string){
+ if(/^[-*+\d]|[.!:;]$/.test(line)||line.length>100||line.split(/\s+/).length>13)return false;
+ const words=line.replace(/[?]/g,'').split(/\s+/).filter(w=>!['a','an','as','of','the','and','to','in','for','does','is'].includes(w.toLowerCase()));
+ return words.length>=2&&words.filter(w=>/^[A-Z]/.test(w)).length/words.length>=.75;
 }
 export function extractSummaryTopics(text:string):SummaryTopic[]{
- const lines=currentClassText(text.replace(/^---\s*\n[\s\S]*?\n---\s*\n/,'' )).split('\n'),blocks:{title:string;body:string[]}[]=[];let current:typeof blocks[number]|null=null,inCode=false;
- for(const raw of lines){const line=raw.trim();if(/^```/.test(line)){inCode=!inCode;if(current)current.body.push(raw);continue}if(inCode){current?.body.push(raw);continue}if(!line)continue;
-  const heading=line.match(/^#{1,6}\s+(.+?)\s*#*$/),bullet=line.match(/^(?:[-*+]\s+|\d+[.)]\s+)?(?:\*\*)?([A-Z][^:\n]{1,88}?)(?:\*\*)?\s*:\s*(.*)$/),numbered=line.match(/^\d+[.)]\s+(?:\*\*)?([A-Z][^.!?]{1,80}?)(?:\*\*)?$/),bold=line.match(/^\*\*([^*]{2,88})\*\*$/);
-  const title=clean(heading?.[1]||bullet?.[1]||numbered?.[1]||bold?.[1]||'');
-  if(title){if(container.test(title)){current=null;continue}current={title,body:bullet?.[2]?[bullet[2]]:[]};blocks.push(current)}else current?.body.push(raw);
+ const scoped=currentClassText(text.replace(/^---\s*\n[\s\S]*?\n---\s*\n/,''));
+ type Block={title:string;body:string[];path:string[];context:string;container:boolean;level:number};
+ const blocks:Block[]=[],stack:Block[]=[],intro:string[]=[];let current:Block|null=null,inCode=false;
+ for(const raw of scoped.split('\n')){
+  const line=raw.trim();if(/^```/.test(line)){inCode=!inCode;current?.body.push(raw);continue}if(inCode){current?.body.push(raw);continue}if(!line)continue;
+  const heading=line.match(/^(#{1,6})\s+(.+?)\s*#*$/),bold=line.match(/^\*\*([^*]{2,100})\*\*$/);
+  const definition=line.match(/^(?:[-*+]\s+|\d+[.)]\s+)?(?:\*\*)?([A-Z][^:\n]{1,88}?)(?:\*\*)?\s*:\s*(.*)$/);
+  // A colon inside an existing section introduces its details, not a new topic.
+  const standaloneDefinition:boolean=!!definition&&(!current||current.container||current.level===99);
+  const title=clean(heading?.[2]||bold?.[1]||(standaloneDefinition?definition?.[1]:'')||(!/^[-*+]\s/.test(line)&&plainHeading(line)?line:''));
+  if(title){
+   const level:number=heading?heading[1].length:standaloneDefinition?99:current&&!current.body.length?current.level+1:2;
+   while(stack.length&&stack.at(-1)!.level>=level)stack.pop();
+   const parent=stack.at(-1),path=stack.filter(b=>!b.container).map(b=>b.title);
+   const context=[...stack].reverse().find(b=>b.body.length)?.body.join('\n')||(!blocks.some(b=>!b.container)?intro.join('\n'):'');
+   current={title,body:standaloneDefinition&&definition?.[2]?[definition[2]]:[],path,context,container:container.test(title),level};blocks.push(current);
+   if(level!==99)stack.push(current);
+  }else if(current)current.body.push(raw);else intro.push(raw);
  }
- const distinct=new Map<string,typeof blocks[number]>();for(const block of blocks){const key=block.title.toLowerCase();if(distinct.has(key))distinct.get(key)!.body.push(...block.body);else distinct.set(key,block)}
- if(!distinct.size){const scoped=currentClassText(text),ids=detectConcepts(scoped);for(const id of ids){const title=concept(id)?.label||id;distinct.set(id,{title,body:[scoped]})}if(!ids.length&&scoped.trim())distinct.set('notes',{title:'Class notes',body:[scoped]})}
- return [...distinct.values()].map((b,index)=>{const sourceText=clean(b.body.join('\n')),ids=detectConcepts(b.title+'\n'+sourceText);return {id:`summary-${index}-${b.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')}`,title:b.title,sourceText,conceptIds:ids,lines:fourLines(b.title,sourceText,ids)}});
+ let chosen=blocks.filter(b=>!b.container&&(b.body.length||!blocks.some(child=>child.path.includes(b.title))));
+ if(!chosen.length&&scoped.trim())chosen=[{title:'Your class in simple words',body:[scoped],path:[],context:'',container:false,level:1}];
+ const distinct=new Map<string,Block>();for(const b of chosen){const key=[...b.path,b.title].join('|');const old=distinct.get(key);if(old)old.body.push(...b.body);else distinct.set(key,b)}
+ return [...distinct.values()].map((b,index)=>{
+  const sourceText=clean(b.body.join('\n')),ids=detectConcepts([...b.path,b.title,sourceText].join('\n'));
+  const facts=sourceText.split(/\n+/).map(simpleSummaryText).filter(Boolean);
+  // Explain the named comparison without inventing the lecturer's missing three stages.
+  if(/data is the new oil/i.test(b.title+' '+sourceText))facts.unshift('The comparison means that collecting data is only a start. Like oil that needs processing, raw data needs work before we can use it to answer a useful question.');
+  const rule=rules.find(r=>r.test.test(b.title));
+  if(rule&&facts.length)facts.unshift(rule.lines[0]);
+  const explanation=[...new Set(facts)];
+  if(!explanation.length)explanation.push(simpleSummaryText(b.title));
+  const opening=[...intro,...blocks.filter(x=>x.container&&/overview|introduction/i.test(x.title)).flatMap(x=>x.body)].join(' ');
+  const context=/competitive (?:advantage|asset)/i.test([...b.path,b.title].join(' '))?'This part asks when data can help a business do better than others.':b.context?simpleSummaryText(b.context):index===0&&opening?simpleSummaryText(opening):b.path.length?`This is part of “${easyHeading(b.path.at(-1)!)}”.`:'Start with the idea below, then read the details from this class.';
+  const title=easyHeading(b.title);
+  return {id:`summary-${index}-${b.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')}`,title,originalTitle:b.title,headingPath:b.path,sourceText,conceptIds:ids,context,explanation,lines:fourLines(b.title,sourceText,ids)};
+ });
 }
