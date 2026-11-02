@@ -121,6 +121,12 @@ describe('blank Home and explicit summary recovery',()=>{
  it('refreshing/revisiting Home does not restore an autosaved draft into the new composer',()=>{
   const state=saved();state.classSummaries.unshift({id:'draft',title:'New draft',text:'My unfinished pasted notes',date:'',updatedAt:3});state.studyClassId='draft';for(let i=0;i<2;i++){const html=home(state);expect(html.match(/<textarea[^>]*>([\s\S]*?)<\/textarea>/)?.[1]).toBe('');expect(html).toContain('New draft');expect(html).toContain('Open last class summary')}
  });
+ it('shows the latest summary once and keeps only older classes in the history list',()=>{
+  const html=home(saved());expect((html.match(/Class 30/g)||[]).length).toBe(1);expect((html.match(/>Open last class summary/g)||[]).length).toBe(1);expect(html).toContain('Earlier class summaries');expect(html).toContain('Class 13');
+ });
+ it('does not offer to reopen a summary that is already open',()=>{
+  const html=home(saved(),'last');expect(html).not.toContain('Open last class summary');expect(html).not.toContain('Last saved class summary');expect(html).not.toContain('>Class 30</strong>');expect(html).toContain('Class 13');expect(html).toContain('Start a new blank summary');
+ });
  it('loads old text only when a saved summary is explicitly requested',()=>{
   const state=saved(),html=home(state,'last');expect(html.match(/<textarea[^>]*>([\s\S]*?)<\/textarea>/)?.[1]).toBe('Latest class summary about regression');expect(html).toContain('Editing saved summary:');expect(html).toContain('Revisit your class summary');expect(html).toContain('Start a new blank summary');expect(home(state,'missing').match(/<textarea[^>]*>([\s\S]*?)<\/textarea>/)?.[1]).toBe('');
  });

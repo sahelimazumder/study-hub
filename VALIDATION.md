@@ -100,3 +100,8 @@ Browser verification reproduced the reported beginner sentence, displayed timing
 ### Searchable multi-select dropdowns (2 November 2026)
 
 123 regression tests pass across six files. New checks cover scalar/backward-compatible selections, multiple values, explicit empty versus All, OR/AND matching, compact collapsed rendering, multi-session focus and backups. The public TypeScript/build and privacy audit pass. Browser checks covered shared session/topic controls in Practice and Create a Test, subject and difficulty menus, chart focus, references, lessons, flashcard status and mistake filters. Selecting two Practice subjects reduced the eligible set from 46 to 12; Chart Lab region selection produced 36/72 rows for North and 72/72 for North plus South. Search, Escape and Done work; browser error log was empty. Screenshot: artifacts/dropdown-multi-filters.png. No saved notes or answers were cleared.
+
+
+### Single summary entry and direct topic heading (2 November 2026)
+
+Home shows the latest saved summary once, with older summaries in a separate collapsed list. Reopened notes do not show a redundant reopen card or repeat the open record in history. The class introduction now states Topics covered in this class instead of asking the learner to confirm coverage; the return link restores that same saved summary. The reopened-note notice stacks its text and button so narrow screens remain readable. 125 regression tests pass, including two new render checks for duplicate summary entries. Browser checks verified earlier-history exclusion, reopening with zero redundant reopen buttons, the direct heading and returning to the identical notes, with no console errors.
