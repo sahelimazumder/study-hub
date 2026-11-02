@@ -95,3 +95,8 @@ Browser verification reproduced the reported beginner sentence, displayed timing
 ### Multi-session assessment and scoring audit (1 November 2026)
 
 118 regression tests pass. Selection tests cover combining saved sessions, selecting several source-heading topics, empty selections, incidental NULL mentions in primary-key notes, and backup round trips. Scoring tests simulate a complete 150-mark paper: all 30 objective answers, both case rubrics, pending written marks, 150/150 after evidence-based self-assessment, 0/150 with blank answers reviewed as zero, missing criteria, nonfinite awards, exact/partial MSQs and stray review-key exclusion. Case rubric totals match every case/subquestion maximum. Written reasoning is not graded by AI; the user remains responsible for judging it against the rubric. Historical response snapshots remain saved.
+
+
+### Searchable multi-select dropdowns (2 November 2026)
+
+123 regression tests pass across six files. New checks cover scalar/backward-compatible selections, multiple values, explicit empty versus All, OR/AND matching, compact collapsed rendering, multi-session focus and backups. The public TypeScript/build and privacy audit pass. Browser checks covered shared session/topic controls in Practice and Create a Test, subject and difficulty menus, chart focus, references, lessons, flashcard status and mistake filters. Selecting two Practice subjects reduced the eligible set from 46 to 12; Chart Lab region selection produced 36/72 rows for North and 72/72 for North plus South. Search, Escape and Done work; browser error log was empty. Screenshot: artifacts/dropdown-multi-filters.png. No saved notes or answers were cleared.

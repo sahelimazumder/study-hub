@@ -1,10 +1,10 @@
 import type {State,Question} from './core';
-import {selectedClassId,topicsForClass,classLabel} from './classScope';
+import {selectedClassIds,topicsForClass,classLabel} from './classScope';
 import {extractSummaryTopics} from './summaryTopics';
 import {questionMatches,detectConcepts} from './concepts';
 export type AssessmentSelection={mode:'all'|'sessions';classIds:string[];topicKeys:string[]|null};
 export function assessmentScope(state:State){
- const initial=selectedClassId(state),selection:AssessmentSelection=state.assessmentSelection||{mode:initial?'sessions':'all',classIds:initial?[initial]:[],topicKeys:null};
+ const initial=selectedClassIds(state),selection:AssessmentSelection=state.assessmentSelection||{mode:initial===null?'all':'sessions',classIds:initial||[],topicKeys:null};
  const classes=state.classSummaries.filter(c=>selection.classIds.includes(c.id));
  const topics=classes.flatMap(c=>extractSummaryTopics(c.text).map(t=>({...t,key:c.id+'::'+t.id,classId:c.id,className:classLabel(c),label:t.originalTitle||t.title,conceptIds:(detectConcepts(t.originalTitle||t.title).length?detectConcepts(t.originalTitle||t.title):t.conceptIds).filter(id=>topicsForClass(state,c.id).includes(id))})));
  const chosen=selection.mode==='all'?[]:selection.topicKeys===null?topics:topics.filter(t=>selection.topicKeys!.includes(t.key));

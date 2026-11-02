@@ -1,4 +1,4 @@
-import {chartIdsForTopics,scopeTopics,selectedClassId,chartStorageKey} from './classScope';
+import {chartIdsForTopics,scopeTopics,selectedClassIds,selectedClassId,chartStorageKey} from './classScope';
 import {useEffect,useState} from 'react';
 import {BarChart,Bar,LineChart,Line,XAxis,YAxis,Tooltip,CartesianGrid,ResponsiveContainer,ScatterChart,Scatter,Legend,PieChart,Pie,Cell} from 'recharts';
 import {chartLessons,chartSteps,chartIssue,chartHelp,blankChartAnswer,nextChartId,type ChartLesson,type ChartHelp} from './chartLessons';
@@ -16,7 +16,7 @@ export default function GuidedCharts(){
  useEffect(()=>{setStep(0);setMessage('');setHelp(null)},[effectiveId,selectedClassId(state)]);
  function patch(p:Partial<ChartAnswer>){update(s=>({...s,guidedCharts:{...s.guidedCharts,[storageKey]:{...(s.guidedCharts[storageKey]||blankChartAnswer()),...p}}}));setMessage('');setHelp(null)}
  function focusChoice(){requestAnimationFrame(()=>document.getElementById('guided-chart-choice')?.focus())}
- function nextChart(){const next=nextChartId(effectiveId,allowed);if(!next||!a.accepted)return;update(s=>({...s,chartRuns:[...(s.chartRuns||[]),{id:crypto.randomUUID(),lessonId:effectiveId,at:Date.now(),classId:selectedClassId(s),answer:structuredClone(a)}],guidedCharts:{...s.guidedCharts,[chartStorageKey(s,next)]:blankChartAnswer()}}));setId(next);setStep(0);setMessage('');setHelp(null);setTool('Power BI');requestAnimationFrame(()=>document.getElementById('guided-chart-task')?.focus())}
+ function nextChart(){const next=nextChartId(effectiveId,allowed);if(!next||!a.accepted)return;update(s=>({...s,chartRuns:[...(s.chartRuns||[]),{id:crypto.randomUUID(),lessonId:effectiveId,at:Date.now(),classId:selectedClassId(s),classIds:selectedClassIds(s)||[],answer:structuredClone(a)}],guidedCharts:{...s.guidedCharts,[chartStorageKey(s,next)]:blankChartAnswer()}}));setId(next);setStep(0);setMessage('');setHelp(null);setTool('Power BI');requestAnimationFrame(()=>document.getElementById('guided-chart-task')?.focus())}
  function showIssue(issue:ChartHelp){patch({attempts:a.attempts+1,accepted:false});setHelp(issue);setHelpKind('error');setStep(issue.step);focusChoice()}
  function nextStep(){const issue=chartIssue(l,a,steps[activeStep].field);if(issue){showIssue(issue);return}setStep(activeStep+1);setHelp(null);setMessage('');focusChoice()}
  function check(){const issue=chartIssue(l,a);if(issue){showIssue(issue);return}patch({attempts:a.attempts+1,accepted:true});setMessage('Your choices fit this question. Your chart is ready below.')}

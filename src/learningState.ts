@@ -23,10 +23,11 @@ export function learningStateShape(question:z.ZodTypeAny,response:z.ZodTypeAny){
  const count=finite.int().nonnegative();
  const card=z.object({id:z.string(),module:z.string(),front:z.string(),back:z.string(),source:z.string(),kind:z.string()});
  return {
+  studyClassFilter:z.string().optional(),
   assessmentSelection:z.object({mode:z.enum(['all','sessions']),classIds:z.array(z.string()),topicKeys:z.array(z.string()).nullable()}).optional(),
   studyClassId:z.string().nullable().optional(),
-  chartRuns:z.array(z.object({id:z.string(),lessonId:z.string(),at:finite,classId:z.string().nullable(),answer:z.object({chart:z.string(),x:z.string(),y:z.string(),aggregation:z.string(),group:z.string(),hint:count,attempts:count,accepted:z.boolean()})})).optional(),
-  savedSheets:z.array(z.object({id:z.string(),name:z.string(),prompt:z.string(),topic:z.string(),classId:z.string().nullable(),updatedAt:finite,rows:z.array(z.object({item:z.string(),kind:z.string(),when:z.string(),syntax:z.string(),example:z.string(),result:z.string(),mistake:z.string()}))})).default([]),
+  chartRuns:z.array(z.object({id:z.string(),lessonId:z.string(),at:finite,classId:z.string().nullable(),classIds:z.array(z.string()).optional(),answer:z.object({chart:z.string(),x:z.string(),y:z.string(),aggregation:z.string(),group:z.string(),hint:count,attempts:count,accepted:z.boolean()})})).optional(),
+  savedSheets:z.array(z.object({id:z.string(),name:z.string(),prompt:z.string(),topic:z.string(),classId:z.string().nullable(),classIds:z.array(z.string()).optional(),updatedAt:finite,rows:z.array(z.object({item:z.string(),kind:z.string(),when:z.string(),syntax:z.string(),example:z.string(),result:z.string(),mistake:z.string()}))})).default([]),
   guidedCharts:z.record(z.string(),z.object({chart:z.string(),x:z.string(),y:z.string(),aggregation:z.string(),group:z.string(),hint:count,attempts:count,accepted:z.boolean()})).default({}),
   classSummaries:z.array(z.object({id:z.string(),title:z.string().max(160),date:z.string(),chapter:z.string().max(160).optional(),topicIds:z.array(z.string()).optional(),text:z.string().max(50000),updatedAt:finite})).default([]),
   studySessions:z.array(z.object({
@@ -46,5 +47,5 @@ export function learningStateShape(question:z.ZodTypeAny,response:z.ZodTypeAny){
 }
 
 export type SheetRow={item:string;kind:string;when:string;syntax:string;example:string;result:string;mistake:string};
-export type SavedSheet={id:string;name:string;prompt:string;topic:string;classId:string|null;updatedAt:number;rows:SheetRow[]};
+export type SavedSheet={classIds?:string[];id:string;name:string;prompt:string;topic:string;classId:string|null;updatedAt:number;rows:SheetRow[]};
 export type ChartAnswer={chart:string;x:string;y:string;aggregation:string;group:string;hint:number;attempts:number;accepted:boolean};

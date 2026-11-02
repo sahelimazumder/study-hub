@@ -1,9 +1,10 @@
+import MultiFilter from './MultiFilter';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {Bookmark,Check,ArrowRight,ArrowLeft,CheckCircle2,Info} from 'lucide-react';
 import { type Question,type Response,type Case,type Policy, shuffled,score,DEFAULT_POLICY } from './core';
 import {useStudy} from './store';
-import {fmt,moduleName} from './data';
+import {bank,fmt,moduleName} from './data';
 export const Empty=({children}:{children:React.ReactNode})=><div className="empty"><Info size={24}/><p>{children}</p></div>;
 export function SourceRefs({refs}:{refs:{source_id:string;locator:string}[]}){const {go}=useStudy();return <div className="source-line">Source support: {refs.map((r,i)=><button className="text-link" key={i} onClick={()=>go('Materials/Settings')}>{r.source_id} · {r.locator}</button>)}</div>}
 export function BookmarkButton({id}:{id:string}){const {state,update}=useStudy(),saved=state.bookmarks.includes(id);return <button className={`icon-button ${saved?'saved':''}`} aria-label={saved?'Remove bookmark':'Bookmark'} title={saved?'Remove bookmark':'Bookmark'} onClick={()=>update(s=>({...s,bookmarks:saved?s.bookmarks.filter(x=>x!==id):[...s.bookmarks,id]}))}><Bookmark size={18} fill={saved?'currentColor':'none'}/></button>}
@@ -17,5 +18,5 @@ export function CaseText({c}:{c:Case}){return <><div className="eyebrow">CASE ST
 export const NextButton=({onClick,label='Next question'}:{onClick:()=>void;label?:string})=><button className="primary" onClick={onClick}>{label}<ArrowRight size={17}/></button>;
 export const BackButton=({onClick}:{onClick:()=>void})=><button className="secondary" onClick={onClick}><ArrowLeft size={17}/>Back</button>;
 export function PageHeading({eyebrow,title,description,action}:{eyebrow:string;title:string;description:string;action?:React.ReactNode}){return <div className="page-heading"><div><div className="eyebrow">{eyebrow}</div><h1>{title}</h1><p>{description}</p></div>{action}</div>}
-export function ModuleSelect({value,onChange,all='All modules'}:{value:string;onChange:(v:string)=>void;all?:string}){return <label className="field">Module<select value={value} onChange={e=>onChange(e.target.value)}><option value="">{all}</option>{['business','governance','sql','bi','descriptive','probability','inference','regression','charts','cases'].map(id=><option key={id} value={id}>{moduleName(id)}</option>)}</select></label>}
+export function ModuleSelect({value,onChange,all='All modules',multiple=true}:{value:string;onChange:(v:string)=>void;all?:string;multiple?:boolean}){return multiple?<MultiFilter label="Module" value={value} onChange={e=>onChange(e.target.value)} allLabel={all} options={bank.modules.map(m=>({value:m.id,label:m.title}))}/>:<label className="field">Module<select value={value} onChange={e=>onChange(e.target.value)}><option value="">{all}</option>{['business','governance','sql','bi','descriptive','probability','inference','regression','charts','cases'].map(id=><option key={id} value={id}>{moduleName(id)}</option>)}</select></label>}
 export const DoneBadge=()=> <span className="tag green"><CheckCircle2 size={13}/>Completed</span>;

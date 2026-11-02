@@ -72,3 +72,6 @@ The new supplementary reference tables and tool guidance were checked against [P
 
 
 Practice and Create a Test now share a multi-select session/module filter. Topics are named from saved class-summary headings; unsupported topics do not pull in unrelated practice. Select Browse all course content explicitly for the whole bank. Full 150-mark tests use 20 four-mark MCQs, 10 four-mark MSQs and two 15-mark cases. Objective marks are automatic; written marks are rubric-guided self-assessment, with a pending total until every criterion has marks and evidence. Blank case answers cannot receive positive marks.
+
+
+Content filters use searchable multi-select dropdowns across session focus, class topics, Practice, Create a Test, lessons, references, flashcards, mistake history and Chart Lab data rows. Open a dropdown, search, tick several options, then choose Done. All includes the entire eligible set; Clear deliberately selects none. Options combine with OR inside a dropdown and AND between different filters. Practice and Create a Test share saved sessions and source-topic selections. Chart axes, dataset, durations, grading policies and record-editing choices remain single-value activity settings.
